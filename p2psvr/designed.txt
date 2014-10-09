@@ -1,0 +1,47 @@
+msg:
+
+	1.client to server:
+		name|pwd|private ip|port
+
+	2.client request:
+		srcname|objname
+	
+	3.server respnose:
+		objname|prinvate ip|private port|public ip|public port
+
+	4.client to clinet test (private):
+		srcname|objname|hello
+
+	5.client to clinet test (public):
+		srcname|objname|hello
+	
+	6. data msg:
+		srcname|objname|msg
+
+conect:
+	server S client A client B
+
+	A - msg 1 -> S
+	B - msg 1 -> S
+
+	A - msg 2 -> S
+	S - msg 3 -> A
+
+	B - msg 2 -> S
+	S - msg 3 -> B
+
+	if:
+		A - msg 4 -> B
+		B - msg 4 -> A
+	else:
+		A - msg 5 -> B
+		B - msg 5 -> A
+		A - msg 5 -> B
+		B - msg 5 -> A
+	else:
+		A - msg 6 -> S
+		S - msg 6 -> B
+		B - msg 6 -> S
+		S - msg 6 -> A
+
+
