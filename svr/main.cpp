@@ -7,11 +7,22 @@
 #include "logics.h"
 #include "controls.h"
 #include "mysession.h"
+#include "net/preactor.h"
+#include "net/acceptor.h"
+#include "net/fd.h"
+#include "net/selector.h"
+#include "jpack.h"
 
-class Preactor{};
 
-template<class Session>
-class Acceptor{};
+
+typedef UdpChannel<Jpack> udpchn_t;
+
+typedef Preactor<FdHolder, true, Epoll> tcp_preactor_t;
+typedef PreactorServer < tcp_preactor_t, 
+	Acceptor<
+		MySession<Jpack,objects_t, member_login_dispth, member_list_dispth> 
+	> 
+> svr_t;
 
 int main(int argc, char **argv)
 {
@@ -20,19 +31,16 @@ int main(int argc, char **argv)
 	msg_obj_t msg_obj;
 	msg_list_t msgl_obj;
 
-	UdpSock::Init();
+	mlobj.Attach( "memberview" );
+	
+	SockInit();
 	objects_t::Init(&mlobj);
 
 	udpchn_t::conf_t conf = { 11111, 0, "127.0.0.1", "" };
-	arsee::UdpServer<arsee::udpchn_t, objects_t, member_login_dispth, member_list_dispth> svr(conf);
-
-	PreactorServer < Preactor, 
-		Acceptor<
-			MySession<objects_t, member_login_dispth, member_list_dispth> 
-		> 
-	> 
-	psvr(1024, conf);
-
+//	arsee::UdpServer<arsee::udpchn_t, objects_t, member_login_dispth, member_list_dispth> svr(conf);
+	
+	svr_t svr(1024, conf);
+	
 	try{
 		while (true)
 			svr.Run();
@@ -41,7 +49,7 @@ int main(int argc, char **argv)
 		cout << e.what() << endl;
 	}
 
-	UdpSock::UnInit();
+	SockUninit();
 	return 0;
 
 }

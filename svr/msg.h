@@ -7,9 +7,12 @@
 using namespace std;
 
 #ifndef MVC_OBJECT_H
-#include "mvcobject.h"
+#include "mvc/mvcobject.h"
 #endif
 
+#ifndef MODELS_H
+#include "odb/models.h"
+#endif
 
 typedef arsee::Object<Msg> msg_obj_t;
 typedef shared_ptr<msg_obj_t> msg_ptr_t;

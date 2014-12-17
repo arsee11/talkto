@@ -1,4 +1,6 @@
 //models.h
+#ifndef MODELS_H
+#define MODELS_H
 
 #pragma db object
 class Member
@@ -21,6 +23,7 @@ public:
 	{}
 
 	string Name(){ return _name; }
+	string Pwd(){ return _pwd; }
 	size_t Id(){ return _id; }
 	
 private:
@@ -87,3 +90,5 @@ private:
 	#pragma db id auto
 	size_t _id;
 };
+
+#endif /*MODELS_H*/
