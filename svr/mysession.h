@@ -7,7 +7,7 @@ namespace net
 
 //#include "net/session.h"
 #include "controls.h"
-#include "globaldef.h"
+#include "utility.h"
 #include "net/session.h"
 
 using namespace arsee;
@@ -18,6 +18,7 @@ class MySession :
 	public Session<1024>
 {
 	typedef Pack pack_t;
+	typedef Object< MySession<Pack, ObjCollection, Dispachters...> > object_t;
 	
 public:
 	MySession(fd_t fd, const char *ip, unsigned short port)
@@ -33,7 +34,8 @@ public:
 		userial(pck, _inbuf, len);
 		if(pck.Status() )
 		{
-			ArgIteration<Dispachters...>::Handle(ObjCollection::Instance(), pck, _replies);
+			//ArgIteration<Dispachters...>::Handle(ObjCollection::Instance(), pck, _replies);
+			ArgIteration<Dispachters...>::Handle(pck, _replies);
 		}
 	}
 

@@ -12,7 +12,7 @@
 
 
 #ifndef PARAMS_DISPATCH_H
-#include "mvc/params_dispatch.h"
+#include "mvc/logictmpl.h"
 #endif
 
 class AddMember :
@@ -24,7 +24,7 @@ public:
 	{
 	}
 	
-	int Execute(obj_t *obj, const string &id, const string& name);
+	int Execute(member_list_obj_t *obj, const string &id, const string& name);
 
 	const static string name;
 };
@@ -40,7 +40,8 @@ public:
 	
 	int Execute(member_list_obj_t *obj, const string &id, const string& key);
 
-	const static string name;
+	static const string name(){ return "login"; }
+	static const string target{ return member_list_obj_t::name(); }
 };
 
 class TransMsgTo :
@@ -52,7 +53,7 @@ public:
 	{
 	}
 	
-	int Execute(obj_t *obj, const string &id, const string& name);
+	int Execute(member_list_obj_t *obj, const string &id, const string& name);
 
 	const static string name;
 };

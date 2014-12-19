@@ -14,7 +14,7 @@ int AddMember::Execute(obj_t *obj)
 	return 0;
 }
 
-int AddMember::Execute(obj_t *obj, const string &id, const string& name)
+int AddMember::Execute(member_list_obj_t *obj, const string &id, const string& name)
 {
 	cout<<"AddMember::Execute"<<endl;
 	member_ptr_t mem = member_ptr_t(new member_obj_t(id, name));;
@@ -28,8 +28,6 @@ int AddMember::Execute(obj_t *obj, const string &id, const string& name)
 
 
 //MemberLogin
-const string MemberLogin::name = "login";
-template<>
 const string MemberLogin::base_t::_p1 = "id";
 template<>
 const string MemberLogin::base_t::_p2 = "key";

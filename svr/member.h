@@ -20,7 +20,8 @@ typedef arsee::Object<Member> member_obj_t;
 typedef shared_ptr<member_obj_t> member_ptr_t;
 typedef struct member_list :public list< member_ptr_t >
 {
-	string Name(){ return "memberlist"; }
+	//const string Name(){ return name(); }
+	const string name(){ return "memberlist"; }
 	
 } member_list_t;
 
