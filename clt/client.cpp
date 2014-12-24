@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include "net/tcpsock.h"
-
-#include "mvc/jpack.h"
+#include <net/tcpsock.h>
+#include <mvc/jpack.h>
+#include <mvc/mvcrequester.h>
 
 using namespace std;
 using namespace arsee;
@@ -31,7 +31,7 @@ int main(int args, char **argv)
 	
 	try{
 		SockInit();
-		peer = TcpSock::CreateClient(ip, port);
+		peer = TcpSock::CreateClient(string(ip), port);
 	}
 	catch(sockexcpt &e)
 	{
@@ -55,7 +55,7 @@ int main(int args, char **argv)
 			Jpack pck("client", action);
 			pck.Param("id", id);
 			pck.Param("name", name);
-			peer->Write(pck);
+		//	peer->Write(pck);
 			char buf[1024] = { 0 };
 			int len = peer->Read(buf, 1024);
 			cout << "recv("<<len<<"):" << buf+16 << endl;
@@ -63,6 +63,24 @@ int main(int args, char **argv)
 		}
 		else if(action == "login")
 		{
+			Jpack::stream_t id, name;
+			cout<<"id:";
+			cin>>id;
+			cout << "name:";
+			cin>>name;
+			JTcpRequester rqt(action);
+			rqt.Open("115.29.178.221", 11111);
+			rqt.Param("id", id);
+			rqt.Param("name", name);
+			string msg;
+			try{
+				rqt.Request(msg);
+				cout<<msg<<endl;
+			}
+			catch(rqtexcpt &e)
+			{
+				cout<<e.what()<<endl;
+			}
 		}
 		else if(action == "trans_msg")
 		{
