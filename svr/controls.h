@@ -4,24 +4,28 @@
 #define CONTROLS_H
 
 #ifndef MVC_H
-#include "/mvc.h"
-
-#ifndef MEMBER_H
-#include "member.h"
+#include "mvc/mvc.h"
 #endif
 
-#ifndef MSG_H
-#include "msg.h"
-#endif
 
 #ifndef LOGICS_H
 #include "logics.h"
 #endif
 
+#ifndef JPACK_H
+#include "mvc/jpack.h"
+#endif
+
+#ifndef RECEIVER_H 
+#include "mvc/receiver.h"
+#endif
+
 using namespace arsee;
 
-typedef typename MvcTrait<MemberLogin, member_list_obj_t>::dispth_t member_login_dispth;
-typedef typename MvcTrait<AddMember, member_list_obj_t>::dispth_t member_add_dispth;
+
+
+typedef typename MvcTrait<Jpack,Receiver, MemberLogin>::dispth_t member_login_dispth;
+typedef typename MvcTrait<Jpack,Receiver, AddMember>::dispth_t member_add_dispth;
 
 
 //typedef arsee::RControl<member_obj_t, AddMember, arsee::RRequest, udpchannel_t> member_ctrl_t;

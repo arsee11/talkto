@@ -14,9 +14,9 @@ using namespace std;
 #include "odb/models.h"
 #endif
 
-typedef arsee::Object<Msg> msg_obj_t;
-typedef shared_ptr<msg_obj_t> msg_ptr_t;
-typedef list< msg_ptr_t > msg_list_t;
 
+
+typedef std::shared_ptr<Msg> msg_ptr_t;
+typedef list< msg_ptr_t > msg_list_t;
 
 #endif/*MSG_H*/

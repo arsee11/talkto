@@ -2,36 +2,40 @@
 #ifndef MODELS_H
 #define MODELS_H
 
+#include <string>
+
+using namespace std;
+
 #pragma db object
 class Member
 {
 public:
 	Member()
-		:_id("")
-		, _name("member")
+		:_name("member")
 	{}
 
 
-	Member(const string &id, const string &name)
+	Member(size_t id, const string &name)
 		:_id(id)
 		, _name(name)
 	{}
 
-	Member(const char *id, const char *name)
-		:_id(id)
-		, _name(name)
-	{}
 
-	string Name(){ return _name; }
-	string Pwd(){ return _pwd; }
-	size_t Id(){ return _id; }
+	void Login(const string& ip, unsigned short port){ _ip = ip; _port = port; }
+	string loginip(){ return _ip;}
+	unsigned short login_port(){ return _port;}
+	string name(){ return _name; }
+	string pwd(){ return _pwd; }
+	size_t id(){ return _id; }
 	
 private:
 	string _name;
 	string _pwd;
+	string _ip;
+	unsigned short _port;
 
 	#pragma db id auto
-	size_t _id;
+	size_t _id = 0;
 };
 
 

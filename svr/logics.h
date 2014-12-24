@@ -2,60 +2,63 @@
 #ifndef LOGICS_H
 #define LOGICS_H
 
-#ifndef MVC_REQUEST_H
-#include "mvc/mvcrequest.h"
-#endif
-
 #ifndef MEMBER_H
 #include "member.h"
 #endif
 
-
-#ifndef PARAMS_DISPATCH_H
+#ifndef LOGIC_TMPL_H
 #include "mvc/logictmpl.h"
 #endif
 
+#ifndef RECEIVER_H 
+#include "mvc/receiver.h"
+#endif
+
+using namespace arsee;
+
 class AddMember :
-	public arsee::BaseLogicTmpl<2, AddMember, string, string>
+	public arsee::BaseLogicTmpl<2, AddMember, rsp_t, size_t, string>
 {
 public:
-	AddMember(IResponse *rsp)
+	AddMember(rsp_t* rsp)
 		:base_t(rsp)
 	{
 	}
 	
-	int Execute(member_list_obj_t *obj, const string &id, const string& name);
+	int Execute(Receiver *rev, member_list_obj_t *obj, size_t id, const string& name);
 
-	const static string name;
+	static const string name(){ return "registry"; }
+	static const string target(){ return member_list_obj_t::name(); }
 };
 
 class MemberLogin:
-	public arsee::BaseLogicTmpl<2, MemberLogin, string, string>
+	public arsee::BaseLogicTmpl<2, MemberLogin, rsp_t, size_t, string>
 {
 public:
-	MemberLogin(IResponse *rsp)
+	MemberLogin(rsp_t* rsp)
 		:base_t(rsp)
 	{
 	}
 	
-	int Execute(member_list_obj_t *obj, const string &id, const string& key);
+	int Execute(Receiver *rev, member_list_obj_t *obj, size_t id, const string& key);
 
 	static const string name(){ return "login"; }
-	static const string target{ return member_list_obj_t::name(); }
+	static const string target(){ return member_list_obj_t::name(); }
 };
 
 class TransMsgTo :
-	public arsee::BaseLogicTmpl<3, AddMember, string, string>
+	public arsee::BaseLogicTmpl<3, TransMsgTo, rsp_t, size_t, size_t, string>
 {
 public:
-	TransMsgTo(IResponse *rsp)
+	TransMsgTo(rsp_t* rsp)
 		:base_t(rsp)
 	{
 	}
 	
-	int Execute(member_list_obj_t *obj, const string &id, const string& name);
+	int Execute(Receiver *rev, member_list_obj_t *obj, size_t from, size_t to, const string &msg);
 
-	const static string name;
+	static const string name(){ return "tran_msg"; }
+	static const string target(){ return member_list_obj_t::name(); }
 };
 
 #endif/*LOGICS_H*/
