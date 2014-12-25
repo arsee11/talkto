@@ -18,7 +18,7 @@ int main(int args, char **argv)
 {
 	string ip = "115.29.178.221";
 	unsigned short port = 11111;
-	TcpSock::rpeer_ptr_t peer;
+	JTcpRequester rqt;
 	if(args == 3)
 	{
 		ip = argv[1];
@@ -30,8 +30,8 @@ int main(int args, char **argv)
 	}
 	
 	try{
-		SockInit();
-		peer = TcpSock::CreateClient(string(ip), port);
+		SockInit();		
+		rqt.Open("115.29.178.221", 11111);
 	}
 	catch(sockexcpt &e)
 	{
@@ -52,29 +52,33 @@ int main(int args, char **argv)
 			cin>>id;
 			cout << "name:";
 			cin>>name;
-			Jpack pck("client", action);
-			pck.Param("id", id);
-			pck.Param("name", name);
-		//	peer->Write(pck);
-			char buf[1024] = { 0 };
-			int len = peer->Read(buf, 1024);
-			cout << "recv("<<len<<"):" << buf+16 << endl;
+			rqt.Action(action);
+			rqt.Param("id", id);
+			rqt.Param("name", name);
+			try{
+				string msg = rqt.Request(5);
+				cout << msg << endl;
+			}
+			catch (rqtexcpt &e)
+			{
+				cout << e.what() << endl;
+			}
+		
 			
 		}
 		else if(action == "login")
 		{
-			Jpack::stream_t id, name;
+			Jpack::stream_t id, key;
 			cout<<"id:";
 			cin>>id;
-			cout << "name:";
-			cin>>name;
-			JTcpRequester rqt(action);
-			rqt.Open("115.29.178.221", 11111);
+			cout << "key:";
+			cin>>key;
+			rqt.Action(action);
 			rqt.Param("id", id);
-			rqt.Param("name", name);
-			string msg;
+			rqt.Param("key", key);
+			
 			try{
-				rqt.Request(msg);
+				string msg = rqt.Request();
 				cout<<msg<<endl;
 			}
 			catch(rqtexcpt &e)
@@ -86,7 +90,7 @@ int main(int args, char **argv)
 		{
 		}
 	}
-	peer->Close();
+
 	SockUninit();
 	return 0;
 }
