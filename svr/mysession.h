@@ -60,14 +60,33 @@ public:
 			Receiver rev = {_fd, _remoteip, _remote_port};
 			ArgIteration<Dispachters...>::Handle(rev, ObjCollection::Instance(), pck, _replies);
 		}
+		
+		
 	}
 
 	void OutputHandle()
 	{
+		vector<const char*> bufs;
+		vector<size_t> bufsizes;
 		for (auto &ip : _replies)
 		{
+			size_t bufszie=0;
 			typename pack_t::serial_t serial;
-			_outbuf = serial(ip, &_outbuf_size);
+			bufs.push_bck( serial(ip, &bufsize) );
+			bufsizes.push_back(bufsize);
+			_outbuf_size += bufsize;
+		}
+		
+		if( _outbuf != nullptr)
+		{
+			delete[] _outbuf;
+			_outbuf=nullptr;
+		}
+		_outbuf = new char[_outbuf_size];
+		for(size_t i=0; i<bufs.size(); i++)
+		{
+			memcpy(_outbuf+i*bufsizes[i], bufs[i], bufsizes[i]); 
+			delete[] bufsizes[i];
 		}
 	}
 	

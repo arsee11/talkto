@@ -5,6 +5,8 @@
 #include <mvc/jpack.h>
 #include <mvc/mvcrequester.h>
 
+#include "console_view.h"
+
 using namespace std;
 using namespace arsee;
 
@@ -39,6 +41,9 @@ int main(int args, char **argv)
 		return 1;
 	}
 	
+	ConsoleView view("console");
+	ConsoleRspto rsp(&view);
+
 	string action;
 	
 	while(action != "quit")
@@ -52,12 +57,13 @@ int main(int args, char **argv)
 			cin>>id;
 			cout << "name:";
 			cin>>name;
-			rqt.Action(action);
-			rqt.Param("id", id);
-			rqt.Param("name", name);
+			rqt.source(view.name());
+			rqt.action(action);
+			rqt.param("id", id);
+			rqt.param("name", name);
 			try{
-				string msg = rqt.Request(5);
-				cout << msg << endl;
+				rqt.Request(rsp, 5);
+				rsp.Update();
 			}
 			catch (rqtexcpt &e)
 			{
@@ -73,13 +79,14 @@ int main(int args, char **argv)
 			cin>>id;
 			cout << "key:";
 			cin>>key;
-			rqt.Action(action);
-			rqt.Param("id", id);
-			rqt.Param("key", key);
+			rqt.source(view.name());
+			rqt.action(action);
+			rqt.param("id", id);
+			rqt.param("key", key);
 			
 			try{
-				string msg = rqt.Request();
-				cout<<msg<<endl;
+				rqt.Request(rsp, 10);
+				rsp.Update();
 			}
 			catch(rqtexcpt &e)
 			{

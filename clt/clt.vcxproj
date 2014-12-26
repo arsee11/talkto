@@ -87,6 +87,10 @@
   <ItemGroup>
     <ClCompile Include="..\..\mylib\mylib\mvc\mvclib\jpack.cpp" />
     <ClCompile Include="client.cpp" />
+    <ClCompile Include="console_view.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="console_view.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
