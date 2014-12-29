@@ -16,6 +16,23 @@ using namespace arsee;
 #pragma comment(lib, "jsonlibd")
 #endif
 
+void TranMsg(JTcpRequester& rqt, const string& from, const string& to, const string &msg)
+{
+	rqt.source("msg");
+	rqt.action("tran_msg");
+	rqt.param("from", from);
+	rqt.param("to", to);
+	rqt.param("msg", msg);
+
+	try{
+		cout<<rqt.Request(10)<<endl;
+	}
+	catch (rqtexcpt &e)
+	{
+		cout << e.what() << endl;
+	}
+}
+
 int main(int args, char **argv)
 {
 	string ip = "115.29.178.221";
@@ -41,7 +58,7 @@ int main(int args, char **argv)
 		return 1;
 	}
 	
-	ConsoleView view("console");
+	MsgView view("console");
 	ConsoleRspto rsp(&view);
 
 	string action;
@@ -93,8 +110,16 @@ int main(int args, char **argv)
 				cout<<e.what()<<endl;
 			}
 		}
-		else if(action == "trans_msg")
+		else if(action == "tran_msg")
 		{
+			string from, to, msg;
+			cout << "from:";
+			cin >> from;
+			cout << "to:";
+			cin >> to;
+			cout << "msg:";
+			cin >> msg;
+			TranMsg(rqt, from, to, msg);
 		}
 	}
 

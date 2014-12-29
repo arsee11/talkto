@@ -3,7 +3,7 @@
 #include "console_view.h"
 #include <iostream>
 
-int ConsoleView::Execute(const string &msg)
+int MsgView::Execute(const string &msg)
 {
 	cout << "Message:" << msg << endl;
 
