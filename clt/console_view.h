@@ -31,6 +31,7 @@ public:
 	string name(){ return _name; }
 
 	int Execute(const string &msg);
+	static const string p1(){return "msg";}
 
 private:
 	string _name;
@@ -47,7 +48,9 @@ public:
 	string name(){ return "memberlistview"; }
 
 	int Execute(size_t id, const string &name, const string &key);
-
+	static const string p1(){return "id";}
+	static const string p2(){ return "name";}
+	static const string p3(){ return "key";}
 };
 
 typedef Responseto<MemberView, Jpack> MemberlistRspto;
