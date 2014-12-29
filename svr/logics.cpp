@@ -2,14 +2,9 @@
 #include <algorithm>
 #include <iostream>
 #include "mysession.h"
+
+
 //AddMember
-
-template<>
-const string AddMember::base_t::_p1 = "id";
-template<>
-const string AddMember::base_t::_p2 = "name";
-
-
 int AddMember::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const string& name)
 {
 	cout<<"AddMember::Execute"<<endl;
@@ -24,11 +19,6 @@ int AddMember::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const s
 
 
 //MemberLogin
-template<>
-const string MemberLogin::base_t::_p1 = "id";
-template<>
-const string MemberLogin::base_t::_p2 = "key";
-
 int MemberLogin::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const string& key)
 {
 	if (obj == nullptr)
@@ -57,15 +47,6 @@ int MemberLogin::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const
 }
 
 //TransMsgTo
-template<>
-const string TransMsgTo::base_t::_p1 = "from";
-
-template<>
-const string TransMsgTo::base_t::_p2 = "to";
-
-template<>
-const string TransMsgTo::base_t::_p3 = "msg";
-
 int TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size_t to, const string &msg)
 {
 	if (obj == nullptr)
@@ -96,3 +77,25 @@ int TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size
 	return 0;
 }
 
+//MemberLogin
+int MemberInfo::Execute(Receiver* rev, member_list_obj_t *obj, size_t id)
+{
+	if (obj == nullptr)
+		return 1;
+
+	auto i = find_if(obj->ref().begin(), obj->ref().end(),
+		[&id](const member_ptr_t &mem){ return mem->id() == id; }
+	);
+		
+	if (i == obj->ref().end() )
+	{
+		_rsp->ReplyAdd("msg", "member not exist");
+		return 1;
+	}
+
+	_rsp->ReplyAdd("name", (*i)->name());
+	_rsp->ReplyAdd("loginip", (*i)->loginip());
+	_rsp->ReplyAdd("login_port", (*i)->login_port());
+
+	return 0;
+}

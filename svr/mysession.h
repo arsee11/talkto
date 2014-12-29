@@ -31,6 +31,9 @@
 #include "mvc/receiver.h"
 #endif
 
+#include <vector>
+
+using namespace std;
 using namespace arsee;
 
 typedef Preactor<FdHolder, true, Epoll> tcp_preactor_t;
@@ -54,7 +57,7 @@ public:
 		typename pack_t::unserial_t userial(1024);
 		pack_t pck;
 		userial(pck, _inbuf, len);
-		if(pck.Status() )
+		if(pck.status() )
 		{
 			//ArgIteration<Dispachters...>::Handle(ObjCollection::Instance(), pck, _replies);
 			Receiver rev = {_fd, _remoteip, _remote_port};
@@ -70,9 +73,9 @@ public:
 		vector<size_t> bufsizes;
 		for (auto &ip : _replies)
 		{
-			size_t bufszie=0;
+			size_t bufsize=0;
 			typename pack_t::serial_t serial;
-			bufs.push_bck( serial(ip, &bufsize) );
+			bufs.push_back( serial(ip, &bufsize) );
 			bufsizes.push_back(bufsize);
 			_outbuf_size += bufsize;
 		}
@@ -86,7 +89,7 @@ public:
 		for(size_t i=0; i<bufs.size(); i++)
 		{
 			memcpy(_outbuf+i*bufsizes[i], bufs[i], bufsizes[i]); 
-			delete[] bufsizes[i];
+			delete[] bufs[i];
 		}
 	}
 	
