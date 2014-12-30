@@ -48,9 +48,11 @@ int main(int args, char **argv)
 		port = atoi(argv[1]);
 	}
 	
+	MsgView view("msgview");
 	try{
 		SockInit();		
 		rqt.Open("115.29.178.221", 11111);
+		rqt.Listen(&view);
 	}
 	catch(sockexcpt &e)
 	{
@@ -58,7 +60,7 @@ int main(int args, char **argv)
 		return 1;
 	}
 	
-	MsgView view("console");
+	
 	ConsoleRspto rsp(&view);
 
 	string action;
