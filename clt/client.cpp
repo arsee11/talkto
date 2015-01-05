@@ -4,6 +4,7 @@
 #include <net/tcpsock.h>
 #include <mvc/jpack.h>
 #include <mvc/mvcrequester.h>
+#include <mvc/mvcobserver.h>
 
 #include "console_view.h"
 
@@ -38,6 +39,7 @@ int main(int args, char **argv)
 	string ip = "115.29.178.221";
 	unsigned short port = 11111;
 	JTcpRequester rqt;
+	JUdpObserver listener;
 	if(args == 3)
 	{
 		ip = argv[1];
@@ -52,7 +54,8 @@ int main(int args, char **argv)
 	try{
 		SockInit();		
 		rqt.Open("115.29.178.221", 11111);
-		rqt.Listen(&view);
+		listener.Open(11112);
+		listener.Listen(&view);
 	}
 	catch(sockexcpt &e)
 	{

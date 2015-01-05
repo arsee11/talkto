@@ -17,15 +17,10 @@
 using namespace arsee;
 
 class AddMember :
-	public BaseLogicTmpl<2, AddMember, rsp_t, size_t, string>
+	public BaseLogicJpack<2, AddMember, size_t, string>
 {
 public:
-	AddMember(rsp_t* rsp)
-		:base_t(rsp)
-	{
-	}
-	
-	int Execute(Receiver *rev, member_list_obj_t *obj, size_t id, const string& name);
+	response_t* Execute(Receiver *rev, member_list_obj_t *obj, size_t id, const string& name);
 
 	static const string name(){ return "registry"; }
 	static const string target(){ return member_list_obj_t::name(); }
@@ -34,15 +29,10 @@ public:
 };
 
 class MemberLogin:
-	public BaseLogicTmpl<2, MemberLogin, rsp_t, size_t, string>
+	public BaseLogicJpack<2, MemberLogin, size_t, string>
 {
 public:
-	MemberLogin(rsp_t* rsp)
-		:base_t(rsp)
-	{
-	}
-	
-	int Execute(Receiver *rev, member_list_obj_t *obj, size_t id, const string& key);
+	response_t* Execute(Receiver *rev, member_list_obj_t *obj, size_t id, const string& key);
 
 	static const string name(){ return "login"; }
 	static const string target(){ return member_list_obj_t::name(); }
@@ -51,15 +41,10 @@ public:
 };
 
 class TransMsgTo :
-	public BaseLogicTmpl<3, TransMsgTo, rsp_t, size_t, size_t, string>
+	public BaseLogicJpack<3, TransMsgTo, size_t, size_t, string>
 {
 public:
-	TransMsgTo(rsp_t* rsp)
-		:base_t(rsp)
-	{
-	}
-	
-	int Execute(Receiver *rev, member_list_obj_t *obj, size_t from, size_t to, const string &msg);
+	response_t* Execute(Receiver *rev, member_list_obj_t *obj, size_t from, size_t to, const string &msg);
 
 	static const string name(){ return "tran_msg"; }
 	static const string target(){ return member_list_obj_t::name(); }
@@ -69,15 +54,10 @@ public:
 };
 
 class MemberInfo:
-	public BaseLogicTmpl<1, MemberLogin, rsp_t, size_t>
+	public BaseLogicJpack<1, MemberLogin, size_t>
 {
 public:
-	MemberInfo(rsp_t* rsp)
-		:base_t(rsp)
-	{
-	}
-	
-	int Execute(Receiver *rev, member_list_obj_t *obj, size_t id);
+	response_t* Execute(Receiver *rev, member_list_obj_t *obj, size_t id);
 
 	static const string name(){ return "member_info"; }
 	static const string target(){ return member_list_obj_t::name(); }

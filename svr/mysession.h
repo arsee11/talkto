@@ -31,6 +31,10 @@
 #include "mvc/receiver.h"
 #endif
 
+#ifndef TCP_SOCK_H 
+#include "../net/udpsock.h"
+#endif
+
 #include <vector>
 
 using namespace std;
@@ -50,6 +54,7 @@ public:
 	MySession(fd_t fd, const char *ip, unsigned short port)
 		:base_t(fd, ip, port)
 	{
+		_push_sender = UdpSock::Create();
 		base_t::ss_container_t::instance().put(this);
 	}
 
@@ -70,9 +75,7 @@ public:
 			//ArgIteration<Dispachters...>::Handle(ObjCollection::Instance(), pck, _replies);
 			Receiver rev = {base_t::_fd, base_t::_remoteip, base_t::_remote_port};
 			ArgIteration<Dispatchers...>::Handle(rev, ObjCollection::Instance(), pck, _replies);
-		}
-		
-		
+		}		
 	}
 
 	void OutputHandle()
@@ -106,13 +109,20 @@ public:
 
 	int PostOutput(const typename pack_t::pack_list_t::value_type &pck)
 	{
-		_replies.push_back(pck);
-		base_t::_preactor->PostSend(base_t::_fd);
+		//_replies.push_back(pck);
+		//base_t::_preactor->PostSend(base_t::_fd);
+		pack_t::serial_t serial;
+		size_t len=0;
+		const char *buf = serial(pck, &len);
+		AddrPair addr = {11112, _remote_ip};
+		_push_sender->Wtrie(buf, len, addr);
 	}
 
 private:
 	typename pack_t::pack_list_t _replies;
 	typename pack_t::unserial_t _userial = typename pack_t::unserial_t(1024);
+	
+	shared_ptr<UdpPeer> _push_sender;
 };
 
 

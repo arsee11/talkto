@@ -8,7 +8,7 @@
 #define CONSOLE_VIEW_H
 
 #include "mvc/mvcview.h"
-#include "mvc/mvcresponseto.h"
+#include "mvc/mvclresponse.h"
 
 #ifndef JPACK_H
 #include "mvc/jpack.h"
@@ -37,7 +37,7 @@ private:
 	string _name;
 };
 
-typedef Responseto<MsgView, Jpack> ConsoleRspto;
+typedef LResponse<MsgView, Jpack> ConsoleRspto;
 
 
 //////////////////////////////////////////////////////////
@@ -53,6 +53,6 @@ public:
 	static const string p3(){ return "key";}
 };
 
-typedef Responseto<MemberView, Jpack> MemberlistRspto;
+typedef LResponse<MemberView, Jpack> MemberlistRspto;
 
 #endif/*CONSOLE_VIEW_H*/

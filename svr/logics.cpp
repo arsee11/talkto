@@ -5,7 +5,7 @@
 
 
 //AddMember
-int AddMember::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const string& name)
+TransMsgTo::response_t* AddMember::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const string& name)
 {
 	cout<<"AddMember::Execute"<<endl;
 	member_ptr_t mem = member_ptr_t(new Member(id, name));;
@@ -19,10 +19,13 @@ int AddMember::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const s
 
 
 //MemberLogin
-int MemberLogin::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const string& key)
+TransMsgTo::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const string& key)
 {
+	response_t *rsp = new response_t("response");
+	rsp->ParamAdd("msg", "request faild!");
+	
 	if (obj == nullptr)
-		return 1;
+		return rsp;
 
 	auto i = find_if(obj->ref().begin(), obj->ref().end(),
 		[&id](const member_ptr_t &mem){ return mem->id() == id; }
@@ -30,26 +33,31 @@ int MemberLogin::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const
 		
 	if (i == obj->ref().end() )
 	{
-		_rsp->ReplyAdd("msg", "member not exist");
-		return 1;
+		rsp->ParamAdd("msg", "member not exist");
+		return rsp;
 	}
 		//if ((*i)->pwd() != key)
 	if (string("123")!= key)
 	{
-		_rsp->ReplyAdd("msg", "pwd not match");
-		return 2;
+		rsp->ParamAdd("msg", "pwd not match");
+		return rsp;
 	}
 
 	(*i)->Login(rev->ip, rev->port);
-	return 0;
+	rsp->ParamAdd("msg", "request OK");
+	
+	return rsp;
 }
 
 //TransMsgTo
-int TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size_t to, const string &msg)
+TransMsgTo::response_t* TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size_t to, const string &msg)
 {
-	cout<<"AddMember::Execute(..from="<<from<<",to="<<to<<",msg="<<msg<<endl;
+	cout<<"AddMember::Execute(..from="<<from<<",to="<<to<<",msg="<<msg<<")"<<endl;
+	response_t *rsp = new response_t("response");
+	rsp->ParamAdd("msg", "request faild!");
+	
 	if (obj == nullptr)
-		return 1;
+		return rsp;
 
 	auto mfrom = find_if(obj->ref().begin(), obj->ref().end(),
 		[from](const member_ptr_t &mem){ return mem->id() == from; }
@@ -60,7 +68,7 @@ int TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size
 	);
 		
 	if (mto == obj->ref().end() )
-		return 1;
+		return rsp;
 	
 	typename ss_container::session_ptr_t pss =ss_container::instance().get( 
 			(*mto)->loginip()
@@ -68,25 +76,30 @@ int TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size
 	);
 
 	if(pss == nullptr)
-		return 1;
+		return rsp;
 
 	//session_t ss = static_cast<session_t>(*pss);
 	typedef typename ss_container::session_t session_t;
 	cout<<"tranto:"<<pss->remote_ip()<<","<<pss->remote_port()<<endl;
 	auto sender = bind(&session_t::PostOutput, ref(*pss), placeholders::_1);
-	_rsp->PushAdd("msgview", "msg", msg);
-	_rsp->Push(sender);
-	//mto->Update(p, sender);
+	puser_t pusher("pusher", "msgview");
+	pusher.ParamAdd("msgview", "msg", msg);
+	pusher.Push(sender);
 	
-
-	return 0;
+	rsp->ParamAdd("msg", "request OK!");
+	return rsp;
 }
 
 //MemberLogin
-int MemberInfo::Execute(Receiver* rev, member_list_obj_t *obj, size_t id)
+TransMsgTo::response_t* MemberInfo::Execute(Receiver* rev, member_list_obj_t *obj, size_t id)
 {
+	response_t *rsp = new response_t("response");
+	
 	if (obj == nullptr)
-		return 1;
+	{
+		rsp->ParamAdd("msg", "request faild!");
+		return rsp;
+	}
 
 	auto i = find_if(obj->ref().begin(), obj->ref().end(),
 		[&id](const member_ptr_t &mem){ return mem->id() == id; }
@@ -94,13 +107,13 @@ int MemberInfo::Execute(Receiver* rev, member_list_obj_t *obj, size_t id)
 		
 	if (i == obj->ref().end() )
 	{
-		_rsp->ReplyAdd("msg", "member not exist");
-		return 1;
+		rsp->ReplyAdd("msg", "member not exist");
+		return rsp;
 	}
 
-	_rsp->ReplyAdd("name", (*i)->name());
-	_rsp->ReplyAdd("loginip", (*i)->loginip());
-	_rsp->ReplyAdd("login_port", (*i)->login_port());
+	rsp->ReplyAdd("name", (*i)->name());
+	rsp->ReplyAdd("loginip", (*i)->loginip());
+	rsp->ReplyAdd("login_port", (*i)->login_port());
 
-	return 0;
+	return rsp;
 }
