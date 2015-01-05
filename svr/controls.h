@@ -26,6 +26,7 @@ using namespace arsee;
 
 typedef typename MvcTrait<Jpack,Receiver, MemberLogin>::dispth_t member_login_dispth;
 typedef typename MvcTrait<Jpack,Receiver, AddMember>::dispth_t member_add_dispth;
+typedef typename MvcTrait<Jpack,Receiver, TransMsgTo>::dispth_t tranmsg_dispth;
 
 
 //typedef arsee::RControl<member_obj_t, AddMember, arsee::RRequest, udpchannel_t> member_ctrl_t;

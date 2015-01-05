@@ -5,8 +5,8 @@ NetInc=-I../../mylib/
 JsonInc=-I/home/arsee_p/lib/jsoncpp-master/include/
 Libs=-lmymvc
 Libdir=-L../../mylib/lib/
-FLAGS= -I$(Inc) --std=c++11 -g -O 
-TARGT=talto
+FLAGS= -I$(Inc) --std=c++11 -g -O -fno-inline 
+TARGT=talkto
 OBJS=main.o logics.o member.o
 DEBUG=-DDEBUG
 

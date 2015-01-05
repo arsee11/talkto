@@ -33,22 +33,21 @@ int MemberLogin::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const
 		_rsp->ReplyAdd("msg", "member not exist");
 		return 1;
 	}
-	else
+		//if ((*i)->pwd() != key)
+	if (string("123")!= key)
 	{
-		if ((*i)->pwd() != key)
-		{
-			_rsp->ReplyAdd("msg", "pwd not match");
-			(*i)->Login(rev->ip, rev->port);
-			return 2;
-		}
+		_rsp->ReplyAdd("msg", "pwd not match");
+		return 2;
 	}
 
+	(*i)->Login(rev->ip, rev->port);
 	return 0;
 }
 
 //TransMsgTo
 int TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size_t to, const string &msg)
 {
+	cout<<"AddMember::Execute(..from="<<from<<",to="<<to<<",msg="<<msg<<endl;
 	if (obj == nullptr)
 		return 1;
 
@@ -63,13 +62,19 @@ int TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size
 	if (mto == obj->ref().end() )
 		return 1;
 	
-	typename ss_container::session_ptr_t ss =ss_container::instance().get( 
+	typename ss_container::session_ptr_t pss =ss_container::instance().get( 
 			(*mto)->loginip()
 			,(*mto)->login_port()
 	);
 
-	auto sender = bind(&session_t::PostOutput, ref(*ss), placeholders::_1, placeholders::_2);
-	_rsp->PushAdd("msg", msg);
+	if(pss == nullptr)
+		return 1;
+
+	//session_t ss = static_cast<session_t>(*pss);
+	typedef typename ss_container::session_t session_t;
+	cout<<"tranto:"<<pss->remote_ip()<<","<<pss->remote_port()<<endl;
+	auto sender = bind(&session_t::PostOutput, ref(*pss), placeholders::_1);
+	_rsp->PushAdd("msgview", "msg", msg);
 	_rsp->Push(sender);
 	//mto->Update(p, sender);
 	

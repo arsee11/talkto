@@ -38,30 +38,38 @@ using namespace arsee;
 
 typedef Preactor<FdHolder, true, Epoll> tcp_preactor_t;
 
-template<class Pack, class ObjCollection, class... Dispachters>
+template<class Pack, class ObjCollection, class... Dispatchers>
 class MySession :
 	//public net::Session
-	public Session<1024, tcp_preactor_t>
+	public Session<1024, tcp_preactor_t, MySession<Pack, ObjCollection, Dispatchers...> >
 {
 	typedef Pack pack_t;
+	typedef Session<1024, tcp_preactor_t, MySession<Pack, ObjCollection, Dispatchers...> > base_t;
 	
 public:
 	MySession(fd_t fd, const char *ip, unsigned short port)
-		:Session(fd, ip, port)
-	{}
+		:base_t(fd, ip, port)
+	{
+		base_t::ss_container_t::instance().put(this);
+	}
+
+	~MySession()
+	{
+		base_t::ss_container_t::instance().pop(this);
+	}
+
 	void InputHandle(size_t len)
 	{
 #ifdef DEBUG
-		cout<<"recv("<<len<<"):"<<_inbuf<<endl;
+		cout<<"recv("<<len<<"):"<<base_t::_inbuf+8<<endl;
 #endif
-		typename pack_t::unserial_t userial(1024);
 		pack_t pck;
-		userial(pck, _inbuf, len);
+		_userial(pck, base_t::_inbuf, len);
 		if(pck.status() )
 		{
 			//ArgIteration<Dispachters...>::Handle(ObjCollection::Instance(), pck, _replies);
-			Receiver rev = {_fd, _remoteip, _remote_port};
-			ArgIteration<Dispachters...>::Handle(rev, ObjCollection::Instance(), pck, _replies);
+			Receiver rev = {base_t::_fd, base_t::_remoteip, base_t::_remote_port};
+			ArgIteration<Dispatchers...>::Handle(rev, ObjCollection::Instance(), pck, _replies);
 		}
 		
 		
@@ -77,27 +85,42 @@ public:
 			typename pack_t::serial_t serial;
 			bufs.push_back( serial(ip, &bufsize) );
 			bufsizes.push_back(bufsize);
-			_outbuf_size += bufsize;
+			base_t::_outbuf_size += bufsize;
 		}
 		
-		if( _outbuf != nullptr)
+		if( base_t::_outbuf != nullptr)
 		{
-			delete[] _outbuf;
-			_outbuf=nullptr;
+			delete[] base_t::_outbuf;
+			base_t::_outbuf=nullptr;
 		}
-		_outbuf = new char[_outbuf_size];
+		base_t::_outbuf = new char[base_t::_outbuf_size];
 		for(size_t i=0; i<bufs.size(); i++)
 		{
-			memcpy(_outbuf+i*bufsizes[i], bufs[i], bufsizes[i]); 
+			memcpy(base_t::_outbuf+i*bufsizes[i], bufs[i], bufsizes[i]); 
 			delete[] bufs[i];
 		}
+
+		_replies.clear();
 	}
 	
 
+	int PostOutput(const typename pack_t::pack_list_t::value_type &pck)
+	{
+		_replies.push_back(pck);
+		base_t::_preactor->PostSend(base_t::_fd);
+	}
+
 private:
 	typename pack_t::pack_list_t _replies;
+	typename pack_t::unserial_t _userial = typename pack_t::unserial_t(1024);
 };
 
 
-typedef MySession<Jpack,objects_t, member_login_dispth> session_t;
-typedef typename session_t::ss_container_t ss_container;
+typedef MySession<Jpack,objects_t
+	,member_login_dispth
+	,member_add_dispth
+	,tranmsg_dispth
+> mysession_t;
+
+//typedef SessionContainer<session_t > ss_container;
+typedef typename mysession_t::ss_container_t ss_container;

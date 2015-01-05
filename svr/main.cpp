@@ -10,7 +10,7 @@
 
 
 typedef PreactorServer<tcp_preactor_t, 
-	Acceptor<session_t> 
+	Acceptor<mysession_t> 
 > svr_t;
 
 int main(int argc, char **argv)
