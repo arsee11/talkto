@@ -18,8 +18,6 @@ int main(int argc, char **argv)
 	member_list_obj_t mlobj;
 	//msg_list_t msgl_obj;
 
-	mlobj.Attach( "memberview" );
-	
 	SockInit();
 	objects_t::Init(&mlobj);
 

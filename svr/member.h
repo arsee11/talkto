@@ -15,15 +15,8 @@
 #include "mvc/mvcobject.h"
 #endif
 
-#include "mvc/mvcresponse.h"
-
-#ifndef JPACK_H
-#include "mvc/jpack.h"
-#endif
-
 using namespace std;
 
-typedef arsee::RResponse<arsee::Jpack> rsp_t;
 typedef std::shared_ptr<Member>  member_ptr_t;
 typedef struct member_list :public list< member_ptr_t >
 {
@@ -32,7 +25,7 @@ typedef struct member_list :public list< member_ptr_t >
 	
 } member_list_t;
 
-typedef arsee::Object<member_list, rsp_t>  member_list_obj_t;
+typedef arsee::Object<member_list>  member_list_obj_t;
 typedef arsee::ObjectsCollection<member_list_obj_t> objects_t;
 
 #endif /*MEMBER_H*/

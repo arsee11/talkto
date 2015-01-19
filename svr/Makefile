@@ -3,7 +3,7 @@ CXX=g++
 Inc=../../mylib/
 NetInc=-I../../mylib/
 JsonInc=-I/home/arsee_p/lib/jsoncpp-master/include/
-Libs=-lmymvc
+Libs=-lmymvc -lmynet
 Libdir=-L../../mylib/lib/
 FLAGS= -I$(Inc) --std=c++11 -g -O -fno-inline 
 TARGT=talkto
