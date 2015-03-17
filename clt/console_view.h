@@ -19,11 +19,11 @@
 using namespace arsee;
 using namespace std;
 
-class MsgView :
-	public MVCView<1, MsgView, string>
+class RequestView :
+	public MVCView<1, RequestView, string>
 {
 public:
-	MsgView(const char* name)
+	RequestView(const char* name)
 		:_name(name)
 	{}
 
@@ -36,9 +36,6 @@ public:
 private:
 	string _name;
 };
-
-typedef LResponse<MsgView, Jpack> ConsoleRspto;
-
 
 //////////////////////////////////////////////////////////
 class MemberView :
@@ -53,6 +50,18 @@ public:
 	static const string p3(){ return "key";}
 };
 
-typedef LResponse<MemberView, Jpack> MemberlistRspto;
+//////////////////////////////////////////////////////////
+class MsgView :
+	public MVCView<2, MsgView, size_t, string>
+{
+public:
+	string name(){ return "msgview"; }
+
+	int Execute(size_t from, const string &msg);
+	static const string p1(){ return "from"; }
+	static const string p2(){ return "msg"; }
+};
+
+
 
 #endif/*CONSOLE_VIEW_H*/

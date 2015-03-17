@@ -3,9 +3,9 @@
 #include "console_view.h"
 #include <iostream>
 
-int MsgView::Execute(const string &msg)
+int RequestView::Execute(const string &msg)
 {
-	cout << "Message:" << msg << endl;
+	cout << msg << endl;
 
 	return 0;
 }
@@ -17,5 +17,16 @@ int MemberView::Execute(size_t id, const string &name, const string &key)
 	cout << "----------------------------" << endl;
 	cout << "|" << name << "\t|" << key << "\t|" << endl;
 
+	return 0;
+}
+
+
+int MsgView::Execute(size_t from, const string &msg)
+{
+	cout << endl;
+	cout << "Receive a message" << endl;
+	cout << "---------------------------" << endl;
+	cout << "from:" << from << endl;
+	cout << "content:" << msg << endl;
 	return 0;
 }

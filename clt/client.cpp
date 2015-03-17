@@ -19,14 +19,14 @@ using namespace arsee;
 
 void TranMsg(JTcpRequester& rqt, const string& from, const string& to, const string &msg)
 {
-	rqt.source("msg");
+	rqt.source("request");
 	rqt.action("tran_msg");
 	rqt.param("from", from);
 	rqt.param("to", to);
 	rqt.param("msg", msg);
 
 	try{
-		cout<<rqt.Request(10)<<endl;
+		rqt.Request();
 	}
 	catch (rqtexcpt &e)
 	{
@@ -37,9 +37,10 @@ void TranMsg(JTcpRequester& rqt, const string& from, const string& to, const str
 int main(int args, char **argv)
 {
 	string ip = "115.29.178.221";
+	//string ip = "192.168.1.104";;
 	unsigned short port = 11111;
 	JTcpRequester rqt;
-	JUdpObserver listener;
+	JTcpObserver listener;
 	if(args == 3)
 	{
 		ip = argv[1];
@@ -50,12 +51,13 @@ int main(int args, char **argv)
 		port = atoi(argv[1]);
 	}
 	
-	MsgView view("msgview");
+	MsgView view;
+	RequestView rqtview("request");
 	try{
 		SockInit();		
-		rqt.Open("115.29.178.221", 11111);
-		listener.Open(11112);
-		listener.Listen(&view);
+		rqt.Open(ip, 11111);
+		listener.Open( rqt.sender() );
+		listener.Listen();
 	}
 	catch(sockexcpt &e)
 	{
@@ -64,7 +66,8 @@ int main(int args, char **argv)
 	}
 	
 	
-	ConsoleRspto rsp(&view);
+	listener.Register( LResponseFactory::Create<MsgView, Jpack>( &view ) );
+	listener.Register(LResponseFactory::Create<RequestView, Jpack>(&rqtview));
 
 	string action;
 	
@@ -79,13 +82,12 @@ int main(int args, char **argv)
 			cin>>id;
 			cout << "name:";
 			cin>>name;
-			rqt.source(view.name());
+			rqt.source(rqtview.name());
 			rqt.action(action);
 			rqt.param("id", id);
 			rqt.param("name", name);
 			try{
-				rqt.Request(rsp, 5);
-				rsp.Update();
+				rqt.Request();
 			}
 			catch (rqtexcpt &e)
 			{
@@ -101,14 +103,13 @@ int main(int args, char **argv)
 			cin>>id;
 			cout << "key:";
 			cin>>key;
-			rqt.source(view.name());
+			rqt.source(rqtview.name());
 			rqt.action(action);
 			rqt.param("id", id);
 			rqt.param("key", key);
 			
 			try{
-				rqt.Request(rsp, 10);
-				rsp.Update();
+				rqt.Request();
 			}
 			catch(rqtexcpt &e)
 			{

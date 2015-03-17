@@ -73,10 +73,9 @@ TransMsgTo::response_t* TransMsgTo::Execute(Receiver* rev, member_list_obj_t *ob
 		return rsp;
 	
 
-	cout<<"tranto:"<<(*mto)->loginip()<<",11112"<<endl;
-	SockConfig conf(0,0, "","");
-	RemotePeer peer(rev->id, conf);
-	auto sender = bind(&RemotePeer::Write, ref(peer),placeholders::_1, placeholders::_2);
+	cout<<"tranto:"<<(*mto)->loginip()<<(*mto)->login_port()<<endl;
+	mysession_t::session_ptr_t ss = ss_container::instance().get( (*mto)->loginip(), (*mto)->login_port() );
+	auto sender = bind(&mysession_t::PostOutput, ref(ss.get()),placeholders::_1);
 	PushResponse<Jpack> pusher("pusher", "msgview");
 	pusher.ParamAdd("msg", msg);
 	pusher.Push(sender);
