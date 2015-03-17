@@ -54,7 +54,7 @@ TransMsgTo::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *o
 //TransMsgTo
 TransMsgTo::response_t* TransMsgTo::Execute(Receiver* rev, member_list_obj_t *obj, size_t from, size_t to, const string &msg)
 {
-	cout<<"AddMember::Execute(..from="<<from<<",to="<<to<<",msg="<<msg<<")"<<endl;
+	cout<<"TransMsgTo::Execute(..from="<<from<<",to="<<to<<",msg="<<msg<<")"<<endl;
 	response_t *rsp = new response_t("response");
 	rsp->ParamAdd("msg", "request faild!");
 	
@@ -74,11 +74,12 @@ TransMsgTo::response_t* TransMsgTo::Execute(Receiver* rev, member_list_obj_t *ob
 	
 
 	cout<<"tranto:"<<(*mto)->loginip()<<(*mto)->login_port()<<endl;
-	mysession_t::session_ptr_t ss = ss_container::instance().get( (*mto)->loginip(), (*mto)->login_port() );
-	auto sender = bind(&mysession_t::PostOutput, ref(ss.get()),placeholders::_1);
+//	typename ss_container::session_ptr_t ss = ss_container::instance().get( (*mto)->loginip(), (*mto)->login_port() );
+//	auto sender = bind(&mysession_t::PostOutput, ref(*ss),placeholders::_1);
 	PushResponse<Jpack> pusher("pusher", "msgview");
 	pusher.ParamAdd("msg", msg);
-	pusher.Push(sender);
+	pusher.ParamAdd("from",from);
+	pusher.Push<ss_container>((*mto)->loginip(), (*mto)->login_port() );
 	
 	rsp->ParamAdd("msg", "request OK!");
 	return rsp;

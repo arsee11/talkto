@@ -80,6 +80,9 @@ public:
 
 	void OutputHandle()
 	{
+#ifdef DEBUG
+		cout<<"OutputHandle()"<<endl;
+#endif
 		vector<const char*> bufs;
 		vector<size_t> bufsizes;
 		for (auto &ip : _replies)
@@ -99,7 +102,11 @@ public:
 		base_t::_outbuf = new char[base_t::_outbuf_size];
 		for(size_t i=0; i<bufs.size(); i++)
 		{
-			memcpy(base_t::_outbuf+i*bufsizes[i], bufs[i], bufsizes[i]); 
+			if(i==0)
+				memcpy(base_t::_outbuf, bufs[0], bufsizes[0]); 
+			else
+				memcpy(base_t::_outbuf+bufsizes[i-1], bufs[i], bufsizes[i]); 
+
 			delete[] bufs[i];
 		}
 
@@ -107,8 +114,9 @@ public:
 	}
 	
 
-	int PostOutput(const pack_t &pck)
+	int PostOutput(typename pack_t::pack_ptr_t pck)
 	{
+		cout<<"PostOutput()"<<endl;
 		_replies.push_back(pck);
 		base_t::_preactor->PostSend(base_t::_fd);
 		//typename pack_t::serial_t serial;
