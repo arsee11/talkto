@@ -72,11 +72,11 @@ TransMsgTo::response_t* TransMsgTo::Execute(Receiver* rev, member_list_obj_t *ob
 	if (mto == obj->ref().end() )
 		return rsp;
 	
-	auto_ptr<UdpPeer> udp(UdpSock::Create());
-	AddrPair addr = {11112,(*mto)->loginip()};
 
 	cout<<"tranto:"<<(*mto)->loginip()<<",11112"<<endl;
-	auto sender = bind(&UdpPeer::Write, ref(*udp), placeholders::_1, placeholders::_2, addr);
+	SockConfig conf(0,0, "","");
+	RemotePeer peer(rev->id, conf);
+	auto sender = bind(&RemotePeer::Write, ref(peer),placeholders::_1, placeholders::_2);
 	PushResponse<Jpack> pusher("pusher", "msgview");
 	pusher.ParamAdd("msg", msg);
 	pusher.Push(sender);

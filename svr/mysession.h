@@ -32,7 +32,7 @@
 #endif
 
 #ifndef TCP_SOCK_H 
-#include "net/udpsock.h"
+#include "net/tcpsock.h"
 #endif
 
 #include <vector>
@@ -54,7 +54,7 @@ public:
 	MySession(fd_t fd, const char *ip, unsigned short port)
 		:base_t(fd, ip, port)
 	{
-		_push_sender = shared_ptr<UdpPeer>( UdpSock::Create() );
+//		_push_sender = shared_ptr<UdpPeer>( UdpSock::Create() );
 		base_t::ss_container_t::instance().put(this);
 	}
 
@@ -115,14 +115,14 @@ public:
 		size_t len=0;
 		const char *buf = serial(pck, &len);
 		AddrPair addr = {11112, base_t::_remoteip};
-		_push_sender->Write(buf, len, addr);
+//		_push_sender->Write(buf, len, addr);
 	}
 
 private:
 	typename pack_t::pack_list_t _replies;
 	typename pack_t::unserial_t _userial = typename pack_t::unserial_t(1024);
 	
-	shared_ptr<UdpPeer> _push_sender;
+//	shared_ptr<UdpPeer> _push_sender;
 };
 
 
