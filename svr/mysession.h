@@ -109,12 +109,12 @@ public:
 
 	int PostOutput(const pack_t &pck)
 	{
-		//_replies.push_back(pck);
-		//base_t::_preactor->PostSend(base_t::_fd);
-		typename pack_t::serial_t serial;
-		size_t len=0;
-		const char *buf = serial(pck, &len);
-		AddrPair addr = {11112, base_t::_remoteip};
+		_replies.push_back(pck);
+		base_t::_preactor->PostSend(base_t::_fd);
+		//typename pack_t::serial_t serial;
+		//size_t len=0;
+		//const char *buf = serial(pck, &len);
+		//AddrPair addr = {11112, base_t::_remoteip};
 //		_push_sender->Write(buf, len, addr);
 	}
 
