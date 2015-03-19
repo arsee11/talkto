@@ -8,8 +8,13 @@
 #include "net/session.h"
 #endif
 
+#ifndef PREACTOR_H
 #include "net/preactor.h"
+#endif
+
+#ifndef FD_H
 #include "net/fd.h"
+#endif
 
 #ifndef SELECTOR_H
 #include "net/selector.h"
@@ -31,7 +36,7 @@
 #include "mvc/receiver.h"
 #endif
 
-#ifndef TCP_SOCK_H 
+#ifndef TCPSOCK_H 
 #include "net/tcpsock.h"
 #endif
 
@@ -40,18 +45,17 @@
 using namespace std;
 using namespace arsee;
 
-typedef Preactor<FdHolder, true, Epoll> tcp_preactor_t;
+typedef net::Preactor<net::FdHolder, true, net::Epoll> tcp_preactor_t;
 
 template<class Pack, class ObjCollection, class... Dispatchers>
 class MyConnection :
-	//public net::Session
-	public Session<1024, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> >
+	public net::Session<1024, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> >
 {
 	typedef Pack pack_t;
-	typedef Session<1024, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> > base_t;
+	typedef net::Session<1024, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> > base_t;
 	
 public:
-	MyConnection(fd_t fd, const char *ip, unsigned short port)
+	MyConnection(net::fd_t fd, const char *ip, unsigned short port)
 		:base_t(fd, ip, port)
 	{
 //		_push_sender = shared_ptr<UdpPeer>( UdpSock::Create() );

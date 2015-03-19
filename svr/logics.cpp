@@ -1,7 +1,7 @@
 #include "logics.h"
 #include <algorithm>
 #include <iostream>
-#include "mysession.h"
+#include "myconnection.h"
 
 
 //AddMember
