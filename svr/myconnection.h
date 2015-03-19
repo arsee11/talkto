@@ -1,4 +1,4 @@
-//mysession.h
+//MyConnection.h
 
 
 #include "controls.h"
@@ -43,22 +43,22 @@ using namespace arsee;
 typedef Preactor<FdHolder, true, Epoll> tcp_preactor_t;
 
 template<class Pack, class ObjCollection, class... Dispatchers>
-class MySession :
+class MyConnection :
 	//public net::Session
-	public Session<1024, tcp_preactor_t, MySession<Pack, ObjCollection, Dispatchers...> >
+	public Session<1024, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> >
 {
 	typedef Pack pack_t;
-	typedef Session<1024, tcp_preactor_t, MySession<Pack, ObjCollection, Dispatchers...> > base_t;
+	typedef Session<1024, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> > base_t;
 	
 public:
-	MySession(fd_t fd, const char *ip, unsigned short port)
+	MyConnection(fd_t fd, const char *ip, unsigned short port)
 		:base_t(fd, ip, port)
 	{
 //		_push_sender = shared_ptr<UdpPeer>( UdpSock::Create() );
 		base_t::ss_container_t::instance().put(this);
 	}
 
-	~MySession()
+	~MyConnection()
 	{
 		base_t::ss_container_t::instance().pop(this);
 	}
@@ -134,11 +134,11 @@ private:
 };
 
 
-typedef MySession<Jpack,objects_t
+typedef MyConnection<Jpack,objects_t
 	,member_login_dispth
 	,member_add_dispth
 	,tranmsg_dispth
-> mysession_t;
+> myconnection_t;
 
 //typedef SessionContainer<session_t > ss_container;
-typedef typename mysession_t::ss_container_t ss_container;
+typedef typename myconnection_t::ss_container_t conn_container;

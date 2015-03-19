@@ -45,7 +45,8 @@ TransMsgTo::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *o
 		return rsp;
 	}
 
-	(*i)->Login(rev->ip, rev->port);
+	(*i)->ip(rev->ip);
+	(*i)->port(rev->port);
 	rsp->ParamAdd("msg", "request OK");
 	
 	return rsp;
@@ -73,13 +74,11 @@ TransMsgTo::response_t* TransMsgTo::Execute(Receiver* rev, member_list_obj_t *ob
 		return rsp;
 	
 
-	cout<<"tranto:"<<(*mto)->loginip()<<(*mto)->login_port()<<endl;
-//	typename ss_container::session_ptr_t ss = ss_container::instance().get( (*mto)->loginip(), (*mto)->login_port() );
-//	auto sender = bind(&mysession_t::PostOutput, ref(*ss),placeholders::_1);
+	cout<<"tranto:"<<(*mto)->ip()<<(*mto)->port()<<endl;
 	PushResponse<Jpack> pusher("pusher", "msgview");
 	pusher.ParamAdd("msg", msg);
 	pusher.ParamAdd("from",from);
-	pusher.Push<ss_container>((*mto)->loginip(), (*mto)->login_port() );
+	pusher.Push<conn_container>((*mto)->ip(), (*mto)->port() );
 	
 	rsp->ParamAdd("msg", "request OK!");
 	return rsp;
@@ -106,9 +105,10 @@ TransMsgTo::response_t* MemberInfo::Execute(Receiver* rev, member_list_obj_t *ob
 		return rsp;
 	}
 
+	rsp->ParamAdd("id", (*i)->id());
 	rsp->ParamAdd("name", (*i)->name());
-	rsp->ParamAdd("loginip", (*i)->loginip());
-	rsp->ParamAdd("login_port", (*i)->login_port());
+	rsp->ParamAdd("ip", (*i)->ip());
+	rsp->ParamAdd("port", (*i)->port());
 
 	return rsp;
 }
