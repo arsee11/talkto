@@ -54,12 +54,12 @@ int main(int args, char **argv)
 	MsgView view;
 	RequestView rqtview("request");
 	try{
-		SockInit();		
+		net::SockInit();
 		rqt.Open(ip, 11111);
 		listener.Open( rqt.sender() );
 		listener.Listen();
 	}
-	catch(sockexcpt &e)
+	catch (net::sockexcpt &e)
 	{
 		cout<<e.what()<<endl;
 		return 1;
@@ -129,6 +129,6 @@ int main(int args, char **argv)
 		}
 	}
 
-	SockUninit();
+	net::SockUninit();
 	return 0;
 }
