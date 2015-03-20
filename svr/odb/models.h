@@ -3,7 +3,7 @@
 #define MODELS_H
 
 #include <odb/core.hxx>
-#include <odb/laze-ptr.hxx>
+#include <odb/lazy-ptr.hxx>
 #include <string>
 #include <list>
 #include <vector>
@@ -48,7 +48,7 @@ private:
 	string 			_ip		;
 	unsigned short  _port	;
 
-	vector<lazy_shared_ptr<Member> > _friends;
+	//vector<lazy_shared_ptr<Member> > _friends;
 	
 	#pragma db id auto
 	size_t _id = 0;
@@ -57,18 +57,18 @@ private:
 
 ///////////////////////////////////////////////////////////////////yy
 #pragma db object
-class RelationNetWork
+class RelationNetwork
 {
 	friend class odb::access;
 public:
-	RelationNetWork()
+	RelationNetwork()
 	{
 	}
 
 private:
-	size_t 	_x; //member x	
-	size_t 	_y; //member y
-	int 	_w; //weitght
+	lazy_shared_ptr<Member>	_x; //member x	
+	lazy_shared_ptr<Member>	_y; //member y
+	short 		   	_w; //weitght
 	
 	#pragma db id auto
 	size_t 	_id;
@@ -88,7 +88,7 @@ public:
 
 private:
 	#pragma db value_not_null
-	list<shared_ptr<Member>> _x;
+	list<shared_ptr<Member>> _members;
 
 	#pragma db id auto
 	size_t _id	;	
