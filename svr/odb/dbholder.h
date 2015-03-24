@@ -7,25 +7,53 @@
 #include <odb/mysql/database.hxx>
 
 
-template<class Object>
-inline bool Persist(database* db, Object& obj)throw( odb::exception)
+template<class Object, class Id>
+inline bool Persist(database* db, Object& obj, Id& id)throw( odb::exception)
 {
 	try{
 		odb::session s;
 		odb::transaction t( db->begin() );
-		db->persist(obj);
+		id = db->persist(obj);
 		t.commit();
 	}
 	catch(odb::exception& e){
-		//throw e;
+		DbErrorHandle(e);
 		return false;
 	}
 	
 	return true;
 }
 
+template<class Obj, class Id>
+shared_ptr<Obj> GetObjectT(Id id)
+{
+	member_list_obj_t *mems = objects_t::Instance().GetObj<member_list_obj_t>();
+	if (mems == nullptr)
+		return false;
+
+	auto i = find_if(mems->ref().begin(), mems->ref().end(),
+		[id](member_ptr_t m){ return id == m->id(); }
+	);
+
+	if (i == mems->ref().end())
+	{
+		try{
+			odb::transaction t(DbConnPool::instance().get()->begin());
+			t.tracer(stderr_tracer);
+			shared_ptr<Member> m(DbConnPool::instance().get()->load<Member>(id));
+			return m;
+		}
+		catch (odb::exception& e){
+			return nullptr;
+		}
+	}
+
+	return (*i);
+}
+
 inline void DbErrorHandle(odb::exception& e)
 {
+	cout << e.what() << endl;
 }
 
 
@@ -51,7 +79,7 @@ private:
 	DbConnPool()
 	{
 		try{
-			_dbs = auto_ptr<odb::database>(new odb::mysql::database("root", "114225", "localhost"));
+			_dbs = auto_ptr<odb::database>(new odb::mysql::database("root", "123456", "talkto", "localhost"));
 		}
 		catch (odb::exception& e)
 		{
