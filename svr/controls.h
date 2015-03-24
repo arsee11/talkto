@@ -9,7 +9,7 @@
 
 
 #ifndef LOGICS_H
-#include "logics.h"
+#include "member_logics.h"
 #endif
 
 #ifndef JPACK_H

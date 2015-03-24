@@ -119,35 +119,6 @@ namespace odb
     ODB_POTENTIALLY_UNUSED (x);
     ODB_POTENTIALLY_UNUSED (e);
   }
-
-  // Session
-  //
-
-  inline
-  access::object_traits< ::Session >::id_type
-  access::object_traits< ::Session >::
-  id (const object_type& o)
-  {
-    return o._id;
-  }
-
-  inline
-  void access::object_traits< ::Session >::
-  callback (database& db, object_type& x, callback_event e)
-  {
-    ODB_POTENTIALLY_UNUSED (db);
-    ODB_POTENTIALLY_UNUSED (x);
-    ODB_POTENTIALLY_UNUSED (e);
-  }
-
-  inline
-  void access::object_traits< ::Session >::
-  callback (database& db, const object_type& x, callback_event e)
-  {
-    ODB_POTENTIALLY_UNUSED (db);
-    ODB_POTENTIALLY_UNUSED (x);
-    ODB_POTENTIALLY_UNUSED (e);
-  }
 }
 
 namespace odb
@@ -218,28 +189,6 @@ namespace odb
     callback (db, obj, callback_event::pre_erase);
     erase (db, id (obj));
     callback (db, obj, callback_event::post_erase);
-  }
-
-  // Session
-  //
-
-  inline
-  void access::object_traits_impl< ::Session, id_mysql >::
-  erase (database& db, const object_type& obj)
-  {
-    callback (db, obj, callback_event::pre_erase);
-    erase (db, id (obj));
-    callback (db, obj, callback_event::post_erase);
-  }
-
-  inline
-  void access::object_traits_impl< ::Session, id_mysql >::
-  load_ (statements_type& sts,
-         object_type& obj,
-         bool)
-  {
-    ODB_POTENTIALLY_UNUSED (sts);
-    ODB_POTENTIALLY_UNUSED (obj);
   }
 }
 

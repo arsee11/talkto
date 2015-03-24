@@ -1,0 +1,102 @@
+<changelog xmlns="http://www.codesynthesis.com/xmlns/odb/changelog" database="mysql" version="1">
+  <model version="1">
+    <table name="Member" options="ENGINE=InnoDB" kind="object">
+      <column name="name" type="TEXT" null="false"/>
+      <column name="pwd" type="TEXT" null="false"/>
+      <column name="ip" type="TEXT" null="false"/>
+      <column name="port" type="SMALLINT UNSIGNED" null="false"/>
+      <column name="id" type="BIGINT UNSIGNED" null="false"/>
+      <primary-key auto="true">
+        <column name="id"/>
+      </primary-key>
+    </table>
+    <table name="RelationNetwork" options="ENGINE=InnoDB" kind="object">
+      <column name="x" type="BIGINT UNSIGNED" null="true"/>
+      <column name="y" type="BIGINT UNSIGNED" null="true"/>
+      <column name="w" type="SMALLINT" null="false"/>
+      <column name="id" type="BIGINT UNSIGNED" null="false"/>
+      <primary-key auto="true">
+        <column name="id"/>
+      </primary-key>
+      <foreign-key name="RelationNetwork_x_fk" deferrable="DEFERRED">
+        <column name="x"/>
+        <references table="Member">
+          <column name="id"/>
+        </references>
+      </foreign-key>
+      <foreign-key name="RelationNetwork_y_fk" deferrable="DEFERRED">
+        <column name="y"/>
+        <references table="Member">
+          <column name="id"/>
+        </references>
+      </foreign-key>
+    </table>
+    <table name="Group" options="ENGINE=InnoDB" kind="object">
+      <column name="id" type="BIGINT UNSIGNED" null="false"/>
+      <column name="name" type="TEXT" null="false"/>
+      <primary-key auto="true">
+        <column name="id"/>
+      </primary-key>
+    </table>
+    <table name="Group_members" options="ENGINE=InnoDB" kind="container">
+      <column name="object_id" type="BIGINT UNSIGNED" null="false"/>
+      <column name="index" type="BIGINT UNSIGNED" null="false"/>
+      <column name="value" type="BIGINT UNSIGNED" null="false"/>
+      <foreign-key name="Group_members_object_id_fk" on-delete="CASCADE">
+        <column name="object_id"/>
+        <references table="Group">
+          <column name="id"/>
+        </references>
+      </foreign-key>
+      <index name="object_id_i">
+        <column name="object_id"/>
+      </index>
+      <index name="index_i">
+        <column name="index"/>
+      </index>
+      <foreign-key name="Group_members_value_fk" deferrable="DEFERRED">
+        <column name="value"/>
+        <references table="Member">
+          <column name="id"/>
+        </references>
+      </foreign-key>
+    </table>
+    <table name="Msg" options="ENGINE=InnoDB" kind="object">
+      <column name="from" type="BIGINT UNSIGNED" null="true"/>
+      <column name="content" type="TEXT" null="false"/>
+      <column name="id" type="BIGINT UNSIGNED" null="false"/>
+      <primary-key auto="true">
+        <column name="id"/>
+      </primary-key>
+      <foreign-key name="Msg_from_fk" deferrable="DEFERRED">
+        <column name="from"/>
+        <references table="Member">
+          <column name="id"/>
+        </references>
+      </foreign-key>
+    </table>
+    <table name="Msg_to" options="ENGINE=InnoDB" kind="container">
+      <column name="object_id" type="BIGINT UNSIGNED" null="false"/>
+      <column name="index" type="BIGINT UNSIGNED" null="false"/>
+      <column name="value" type="BIGINT UNSIGNED" null="true"/>
+      <foreign-key name="Msg_to_object_id_fk" on-delete="CASCADE">
+        <column name="object_id"/>
+        <references table="Msg">
+          <column name="id"/>
+        </references>
+      </foreign-key>
+      <index name="object_id_i">
+        <column name="object_id"/>
+      </index>
+      <index name="index_i">
+        <column name="index"/>
+      </index>
+      <foreign-key name="Msg_to_value_fk" deferrable="DEFERRED">
+        <column name="value"/>
+        <references table="Member">
+          <column name="id"/>
+        </references>
+      </foreign-key>
+    </table>
+  </model>
+</changelog>

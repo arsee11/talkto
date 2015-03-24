@@ -1,5 +1,5 @@
-#ifndef MEMBER_H
-#define MEMBER_H
+#ifndef OBJECTS_H
+#define OBJECTS_H
 
 #include <string>
 #include <list>
@@ -24,8 +24,20 @@ typedef struct member_list :public list< member_ptr_t >
 	static const string name(){ return "memberlist"; }
 	
 } member_list_t;
-
 typedef arsee::Object<member_list>  member_list_obj_t;
-typedef arsee::ObjectsCollection<member_list_obj_t> objects_t;
 
-#endif /*MEMBER_H*/
+typedef std::shared_ptr<RelationNetwork>  relation_ptr_t;
+typedef struct friends_list :public list< relation_ptr_t >
+{
+	//const string Name(){ return name(); }
+	static const string name(){ return "friends_list"; }
+	
+} friends_t;
+typedef arsee::Object<friends_t>  friends_obj_t;
+
+
+typedef arsee::ObjectsCollection<member_list_obj_t
+	,friends_obj_t
+> objects_t;
+
+#endif /*OBJECTS_H*/
