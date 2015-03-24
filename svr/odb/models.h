@@ -43,7 +43,7 @@ private:
 	string 			_name	;
 	string 			_pwd	;
 	string 			_ip		;
-	unsigned short  _port	;
+	unsigned short  _port=0	;
 
 	//vector<lazy_shared_ptr<Member> > _friends;
 	

@@ -7,33 +7,6 @@
 #include "codes.h"
 
 
-
-template<class Obj, class Id>
-shared_ptr<Obj> GetObjectT(Id id)
-{
-	member_list_obj_t *mems = objects_t::Instance().GetObj<member_list_obj_t>();
-	if( mems == nullptr)
-		return false;
-		
-	auto i = find_if(mems->ref().begin(), mems->ref().end(),
-			[id](member_ptr_t m){ return id == m->id(); }
-	);
-	
-	if (i == mems->ref().end())
-	{
-		try{
-			odb::transaction t( DbConnPool::instance().get()->begin() );
-			shared_ptr<Member> m( DbConnPool::instance().get()->load<Member>( id ) );
-			return m;
-		}
-		catch(odb::exception& e){
-			return nullptr;
-		}
-	}
-	
-	return (*i);
-}
-
 bool IsMemberExist(size_t id)
 {
 	return GetObjectT<Member>(id) != nullptr;
@@ -75,19 +48,22 @@ bool IsFriendWith(const friends_t& friends, size_t me, size_t who)
 
 ////////////////////////////////////////////////////////////////////
 //AddMember
-AddMember::response_t* AddMember::Execute(Receiver* rev, member_list_obj_t *obj, const string& name)
+AddMember::response_t* AddMember::Execute(Receiver* rev, member_list_obj_t *obj, const string& name, const string& pwd)
 {
 	response_t *rsp = new response_t("response");
 	rsp->ParamAdd("code", RspCode::OK);
 	cout<<"AddMember::Execute"<<endl;
 	member_ptr_t mem = member_ptr_t(new Member(name));
+	mem->pwd(pwd);
 	//member_list maxsize=? 存放最近活跃的？
 	obj->ref().push_back(mem);
 	
 	//persistent handle
-	if( !Persist( DbConnPool::instance().get(), (*mem) ) )
+	size_t id = 0;
+	if( !Persist( DbConnPool::instance().get(), (*mem), id ) )
 		rsp->ParamAdd("code", RspCode::Failed);
-		
+	
+	rsp->ParamAdd("id", id);
 	return rsp;
 }
 
@@ -103,43 +79,29 @@ MemberLogin::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *
 	if (obj == nullptr)
 		return rsp;
 
-	auto i = find_if(obj->ref().begin(), obj->ref().end(),
-		[&id](const member_ptr_t &mem){ return mem->id() == id; }
-	);
-		
-	if (i == obj->ref().end() )
+	member_ptr_t m;
+	if ((m = GetObjectT<Member>(id)) == nullptr)
 	{
-		typedef odb::query<Member> query_t;
-		typedef odb::result<Member> result_t;
-		try{
-			//odb::session ss;
-			DbConnPool::db_ptr_t db = DbConnPool::instance().get();
-			odb::transaction t(db->begin());
-			result_t r(db->query<Member>(query_t::id == id));
-			if (r.size() == 0)
-			{
-				return rsp;
-			}
-			else
-				rawkey = r.begin()->pwd();
-		}
-		catch (odb::exception& e){
-			return rsp;
-			DbErrorHandle(e);
-		}
-		
+		return rsp;
 	}
-	else
-		rawkey = (*i)->pwd();
 		
-		//if ((*i)->pwd() != key)
-	if (rawkey != key)
+	if (m->pwd() != key)
 	{
 		return rsp;
 	}
 
-	(*i)->ip(rev->ip);
-	(*i)->port(rev->port);
+	m->ip(rev->ip);
+	m->port(rev->port);
+	try{
+		odb::transaction t(DbConnPool::instance().get()->begin());
+		DbConnPool::instance().get()->update<Member>(m);
+		t.commit();
+	}
+	catch (odb::exception& e){
+		DbErrorHandle(e);
+		return rsp;
+	}
+
 	rsp->ParamAdd("code", RspCode::OK);
 	
 	return rsp;
@@ -154,24 +116,22 @@ MemberInfo::response_t* MemberInfo::Execute(Receiver* rev, member_list_obj_t *ob
 	
 	if (obj == nullptr)
 	{
-		rsp->ParamAdd("msg", "request faild!");
+		rsp->ParamAdd("code", RspCode::Failed);
 		return rsp;
 	}
 
-	auto i = find_if(obj->ref().begin(), obj->ref().end(),
-		[&id](const member_ptr_t &mem){ return mem->id() == id; }
-	);
-		
-	if (i == obj->ref().end() )
+	member_ptr_t m;
+	if ((m = GetObjectT<Member>(id)) == nullptr)
 	{
-		rsp->ParamAdd("msg", "member not exist");
+		rsp->ParamAdd("code", RspCode::Failed);
 		return rsp;
 	}
-
-	rsp->ParamAdd("id", (*i)->id());
-	rsp->ParamAdd("name", (*i)->name());
-	rsp->ParamAdd("ip", (*i)->ip());
-	rsp->ParamAdd("port", (*i)->port());
+	
+	rsp->ParamAdd("code", RspCode::OK);
+	rsp->ParamAdd("id", m->id());
+	rsp->ParamAdd("name", m->name());
+	rsp->ParamAdd("ip", m->ip());
+	rsp->ParamAdd("port", m->port());
 
 	return rsp;
 }
@@ -242,6 +202,7 @@ AcceptFriendAction::response_t* AcceptFriendAction::Execute(
 			RelationNetwork *rn = new RelationNetwork(me, who, 0);
 			DbConnPool::instance().get()->persist(*rn);
 			obj->ref().push_back(relation_ptr_t(rn));
+			t.commit();
 		}
 		catch(odb::exception& e){
 			DbErrorHandle(e);
@@ -301,14 +262,17 @@ FriendInfo::response_t* FriendInfo::Execute(Receiver* rev, friends_obj_t *obj, s
 		try{
 			DbConnPool::db_ptr_t db = DbConnPool::instance().get();
 			odb::transaction t( db->begin() );
+			t.tracer(stderr_tracer);
 			result_t r( db->query<RelationNetwork>(query_t::x==who) );
 			for(result_t::iterator i(r.begin()); i != r.end(); ++i)
 			{
 				PushResponse<Jpack> p("firends_view");
-				p.ParamAdd("who"	,i->y()->id());
+				member_ptr_t x(i->x().load());
+				member_ptr_t y(i->y().load());
+				p.ParamAdd("who"	,y->id());
 				p.ParamAdd("weight"	,i->w());
-				//p.Push<conn_container>( mwho->ip(), mwho->port() );
-				obj->ref().push_back( relation_ptr_t( new RelationNetwork(i->x()->id(), i->y()->id(), i->w() ) ) );
+				//p.Push<conn_container>( mwho->ip(), mwho->port() );7
+				obj->ref().push_back( relation_ptr_t( new RelationNetwork(x->id(), y->id(), i->w() ) ) );
 			}
 		}
 		catch (odb::exception& e){

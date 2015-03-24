@@ -18,13 +18,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="addmember_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\member_logics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\odb\models-odb.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="friendinfo_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

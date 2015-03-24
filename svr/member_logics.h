@@ -29,10 +29,10 @@ using namespace arsee;
 //params:code=(OK|FAILED)
 //*******************response
 class AddMember :
-	public BaseLogicJpack<1, AddMember, size_t, string>
+	public BaseLogicJpack<2, AddMember, size_t, string, string>
 {
 public:
-	response_t* Execute(Receiver *rev, member_list_obj_t *obj, const string& name);
+	response_t* Execute(Receiver *rev, member_list_obj_t *obj, const string& name, const string& pwd);
 
 	static const string name(){ return "registry"; }
 	static const string target(){ return member_list_obj_t::name(); }

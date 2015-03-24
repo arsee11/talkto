@@ -85,7 +85,7 @@
   <ItemGroup>
     <ClCompile Include="..\member_logics.cpp" />
     <ClCompile Include="..\odb\models-odb.cxx" />
-    <ClCompile Include="addmember_test.cpp" />
+    <ClCompile Include="friendinfo_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
