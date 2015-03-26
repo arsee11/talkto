@@ -1,10 +1,10 @@
-#include "logics.h"
 #include <algorithm>
 #include <iostream>
 #include "myconnection.h"
 #include "odb/models-odb.hxx"
 #include "odb/dbholder.h"
-
+#include "msg_logics.h"
+#include "logics.h"
 
 ////////////////////////////////////////////////////////////////////
 //TransMsgTo
@@ -13,9 +13,8 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 {
 	cout<<"TransMsgTo::Execute(..from="<<from<<",to="<<to<<",msg="<<msg<<")"<<endl;
 	response_t *rsp = new response_t("response");
-	rsp->ParamAdd("code", REQUEST_FAILED);
-	rsp->ParamAdd("msg", "request faild!");
-	
+	rsp->ParamAdd("code", RspCode::Failed);
+		
 	if (obj == nullptr)
 		return rsp;
 
@@ -23,33 +22,8 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 		[to](const relation_ptr_t &r){ return r->y() == to; }
 	);
 		
-	if (mto == obj->ref().end() )
-	{
-		typedef odb::query<RelationNetwork> query_t;
-		typedef odb::result<RelationNetwork> result_t;
-		try{
-			//odb::session ss;
-			odb::transaction t( DbConnPool::instance().get()->begin() );
-			result r( DbConnPool::instance().get()->query<RelationNetwork>(
-					  query_t::x==from && query::y==to)
-			);
-			
-			if( r.size() == 0 )
-			{
-				rsp->ParamAdd("code", NOT_YOUR_FRIEND);
-				rsp->ParamAdd("msg", "not your friend!");
-				return rsp;
-			}
-		}
-		catch(odb::exception& e)
-		{
-			DbHandleError(e);
-			return rsp;
-		}
-			
-			//Add to friends_obj_t;
-	}
-	
+	if (!IsFriendWith(obj->ref(), from, to) )
+		return rsp;	
 
 	cout<<"tranto:"<<(*mto)->ip()<<(*mto)->port()<<endl;
 	PushResponse<Jpack> pusher("pusher", "msgview");
@@ -57,7 +31,9 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 	pusher.ParamAdd("from",from);
 	pusher.Push<conn_container>((*mto)->ip(), (*mto)->port() );
 	
-	rsp->ParamAdd("msg", "request OK!");
+	//save msg history?
+	
+	rsp->ParamAdd("code", RspCode::OK);
 	return rsp;
 }
 
