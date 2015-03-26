@@ -20,7 +20,7 @@ using namespace arsee;
 using namespace std;
 
 class RequestView :
-	public MVCView<1, RequestView, string>
+	public MVCView<1, RequestView, int>
 {
 public:
 	RequestView(const char* name)
@@ -30,8 +30,8 @@ public:
 
 	string name(){ return _name; }
 
-	int Execute(const string &msg);
-	static const string p1(){return "msg";}
+	int Execute(int code);
+	static const string p1(){return "code";}
 
 private:
 	string _name;
@@ -39,15 +39,14 @@ private:
 
 //////////////////////////////////////////////////////////
 class MemberView :
-	public MVCView<3, MemberView, size_t, string, string>
+	public MVCView<2, MemberView, size_t, string>
 {
 public:
 	string name(){ return "memberlistview"; }
 
-	int Execute(size_t id, const string &name, const string &key);
+	int Execute(size_t id, const string &name);
 	static const string p1(){ return "id";}
 	static const string p2(){ return "name";}
-	static const string p3(){ return "key";}
 };
 
 //////////////////////////////////////////////////////////

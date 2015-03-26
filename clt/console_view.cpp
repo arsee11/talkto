@@ -3,19 +3,22 @@
 #include "console_view.h"
 #include <iostream>
 
-int RequestView::Execute(const string &msg)
+int RequestView::Execute(int code)
 {
-	cout << msg << endl;
+	if(code == 0)
+		cout << "quest ok!" << endl;
+	if(code == 1)
+		cout<<"quest failed"<<endl;
 
 	return 0;
 }
 
 
-int MemberView::Execute(size_t id, const string &name, const string &key)
+int MemberView::Execute(size_t id, const string &name)
 {
 	cout << id << endl;
 	cout << "----------------------------" << endl;
-	cout << "|" << name << "\t|" << key << "\t|" << endl;
+	cout << "|" << name << "\t|" << endl;
 
 	return 0;
 }
