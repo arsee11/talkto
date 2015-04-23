@@ -1,4 +1,6 @@
 //models.h
+//odb -d mysql --generate-query --generate-schema --generate-session --std c++11 --default-pointer shared_ptr models.h
+
 #ifndef MODELS_H
 #define MODELS_H
 

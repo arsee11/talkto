@@ -1,7 +1,7 @@
 #include "member_logics.h"
 #include <algorithm>
 #include <iostream>
-//#include "myconnection.h"
+#include "myconnection.h"
 #include "odb/models-odb.hxx"
 #include "odb/dbholder.h"
 #include "codes.h"
@@ -134,7 +134,7 @@ MakeFriendAction::response_t* MakeFriendAction::Execute(
 	//PushResponse<Jpack> pusher("pusher", MakeFriendAction::name()); //action -> view 
 	pusher.ParamAdd("code", RspCode::MakeFriendRequest);
 	pusher.ParamAdd("who",me);
-	//pusher.Push<conn_container>(mwho->ip(), mwho->port() );
+	pusher.Push<conn_container>(mwho->ip(), mwho->port() );
 	
 	rsp->ParamAdd("code", OK);
 	return rsp;
@@ -183,7 +183,7 @@ AcceptFriendAction::response_t* AcceptFriendAction::Execute(
 	pusher.ParamAdd("code", op?RspCode::MakeFriendArgee:RspCode::MakeFriendRefuse);
 	pusher.ParamAdd("who",me);
 	pusher.ParamAdd("msg", msg);
-	//pusher.Push<conn_container>(mwho->ip(), mwho->port() );
+	pusher.Push<conn_container>(mwho->ip(), mwho->port() );
 	
 	rsp->ParamAdd("code", OK);
 	return rsp;
@@ -218,7 +218,7 @@ FriendInfo::response_t* FriendInfo::Execute(Receiver* rev, friends_obj_t *obj, s
 			PushResponse<Jpack> p("firends_view");
 			p.ParamAdd("who"	,i->y()->id());
 			p.ParamAdd("weight"	,i->w());
-			//p.Push<conn_container>( mwho->ip(), mwho->port() );
+			p.Push<conn_container>( mwho->ip(), mwho->port() );
 		}
 	}
 	//load form persistent.
@@ -238,7 +238,7 @@ FriendInfo::response_t* FriendInfo::Execute(Receiver* rev, friends_obj_t *obj, s
 				member_ptr_t y(i->y().load());
 				p.ParamAdd("who"	,y->id());
 				p.ParamAdd("weight"	,i->w());
-				//p.Push<conn_container>( mwho->ip(), mwho->port() );7
+				p.Push<conn_container>( mwho->ip(), mwho->port() );
 				obj->ref().push_back( relation_ptr_t( new RelationNetwork(x->id(), y->id(), i->w() ) ) );
 			}
 		}

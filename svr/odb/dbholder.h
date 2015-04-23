@@ -5,7 +5,54 @@
 
 #include <odb/core.hxx>
 #include <odb/mysql/database.hxx>
+#include <memory>
+#include <iostream>
 
+
+using namespace std;
+
+
+inline void DbErrorHandle(odb::exception& e)
+{
+	cout << e.what() << endl;
+}
+
+class DbConnPool
+{
+	enum{
+		MaxConn = 1
+	};
+
+public:
+	typedef odb::database* db_ptr_t;
+
+public:
+	static DbConnPool& instance()
+	{
+		static DbConnPool _myself;
+		return _myself;
+	}
+	
+	odb::database* get(){ return _dbs.get(); }
+
+private:
+	DbConnPool()
+	{
+		try{
+			_dbs = auto_ptr<odb::database>(new odb::mysql::database("root", "114225", "talkto", "127.0.0.1"));
+		}
+		catch (odb::exception& e)
+		{
+			DbErrorHandle(e);
+			//_dbs = nullptr;
+		}
+	}
+	DbConnPool(const DbConnPool&);
+	DbConnPool& operator=(const DbConnPool&);
+	
+	auto_ptr<odb::database> _dbs;
+	
+};
 
 template<class Object, class Id>
 inline bool Persist(database* db, Object& obj, Id& id)throw( odb::exception)
@@ -51,47 +98,6 @@ shared_ptr<Obj> GetObjectT(Id id)
 	return (*i);
 }
 
-inline void DbErrorHandle(odb::exception& e)
-{
-	cout << e.what() << endl;
-}
 
-
-class DbConnPool
-{
-	enum{
-		MaxConn = 1
-	};
-
-public:
-	typedef odb::database* db_ptr_t;
-
-public:
-	static DbConnPool& instance()
-	{
-		static DbConnPool _myself;
-		return _myself;
-	}
-	
-	odb::database* get(){ return _dbs.get(); }
-
-private:
-	DbConnPool()
-	{
-		try{
-			_dbs = auto_ptr<odb::database>(new odb::mysql::database("root", "123456", "talkto", "localhost"));
-		}
-		catch (odb::exception& e)
-		{
-			DbErrorHandle(e);
-			//_dbs = nullptr;
-		}
-	}
-	DbConnPool(const DbConnPool&);
-	DbConnPool& operator=(const DbConnPool&);
-	
-	auto_ptr<odb::database> _dbs;
-	
-};
 
 #endif /*DBHOLDER_H*/

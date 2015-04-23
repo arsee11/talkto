@@ -7,7 +7,7 @@
 #pragma comment(lib, "E:\\lib\\odb\\libodb-mysql-2.3.0\\lib\\odb-mysql-d")
 
 
-//g++ -std=c++11 -lodb -lodb-mysql makefriendaction_test.cpp models-odb.cxx member_logics.cpp
+//g++ -g -std=c++11 -I../../../mylib makefriendaction_test.cpp ../member_logics.cpp ../odb/models-odb.cxx ../logics.cpp -lodb -lodb-mysql
 
 int main()
 {

@@ -1,5 +1,9 @@
 //logics.cpp
 
+#include "objects.h"
+#include "odb/dbholder.h"
+#include "odb/models-odb.hxx"
+
 bool IsFriendWith(const friends_t& friends, size_t me, size_t who)
 {
 	auto i = find_if(friends.begin(), friends.end(),

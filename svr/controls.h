@@ -8,6 +8,10 @@
 #endif
 
 
+#ifndef MSG_LOGICS_H
+#include "msg_logics.h"
+#endif
+
 #ifndef LOGICS_H
 #include "member_logics.h"
 #endif

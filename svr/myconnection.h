@@ -28,8 +28,8 @@
 #include "controls.h"
 #endif
 
-#ifndef MEMBER_H
-#include "member.h"
+#ifndef OBJECTS_H
+#include "objects.h"
 #endif
 
 #ifndef RECEIVER_H 

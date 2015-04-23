@@ -1,7 +1,7 @@
 //member_logic.h
 
-#ifndef LOGICS_H
-#define LOGICS_H
+#ifndef MEMBER_LOGICS_H
+#define MEMBER_LOGICS_H
 
 #ifndef OBJECTS_H
 #include "objects.h"
@@ -155,4 +155,4 @@ public:
 	static const string p2(){ return "who"; }
 };
 
-#endif/*LOGICS_H*/
+#endif/*MEMBER_LOGICS_H*/

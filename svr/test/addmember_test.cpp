@@ -1,5 +1,3 @@
- //addmember_test.cpp
- 
 #include "../member_logics.h"
 #include <iostream>
 #pragma comment(lib, "d:\\mylib\\mylib\\lib\\mvclibd")
@@ -7,7 +5,7 @@
 #pragma comment(lib, "E:\\lib\\odb\\libodb-mysql-2.3.0\\lib\\odb-mysql-d")
 
 
-//g++ -std=c++11 -lodb -lodb-mysql addmember_test.cpp models-odb.cxx
+//g++ -g -std=c++11 -I../../../mylib addmember_test.cpp ../member_logics.cpp ../odb/models-odb.cxx ../logics.cpp -lodb -lodb-mysql
  
  int main()
  {
