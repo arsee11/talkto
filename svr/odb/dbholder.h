@@ -78,10 +78,12 @@ shared_ptr<Obj> GetObjectT(Id id)
 	if (mems == nullptr)
 		return false;
 
+	//get from memory
 	auto i = find_if(mems->ref().begin(), mems->ref().end(),
 		[id](member_ptr_t m){ return id == m->id(); }
 	);
 
+	//get from persistent
 	if (i == mems->ref().end())
 	{
 		try{

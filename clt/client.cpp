@@ -36,8 +36,8 @@ void TranMsg(JTcpRequester& rqt, const string& from, const string& to, const str
 
 int main(int args, char **argv)
 {
-	string ip = "115.29.178.221";
-	//string ip = "192.168.1.104";;
+	//string ip = "115.29.178.221";
+	string ip = "192.168.10.100";;
 	unsigned short port = 11111;
 	JTcpRequester rqt;
 	JTcpObserver listener;
