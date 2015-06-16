@@ -21,9 +21,10 @@ void TranMsg(JTcpRequester& rqt, const string& from, const string& to, const str
 {
 	rqt.source("request");
 	rqt.action("tran_msg");
-	rqt.param("from", from);
-	rqt.param("to", to);
-	rqt.param("msg", msg);
+	rqt.add_param("from", from);
+	rqt.add_param("to", to);
+	rqt.add_param("msg", msg);
+	rqt.append_param();
 
 	try{
 		rqt.Request();
@@ -84,8 +85,9 @@ int main(int args, char **argv)
 			cin>>name;
 			rqt.source(rqtview.name());
 			rqt.action(action);
-			rqt.param("id", id);
-			rqt.param("name", name);
+			rqt.add_param("id", id);
+			rqt.add_param("name", name);
+			rqt.append_param();
 			try{
 				rqt.Request();
 			}
@@ -105,8 +107,9 @@ int main(int args, char **argv)
 			cin>>key;
 			rqt.source(rqtview.name());
 			rqt.action(action);
-			rqt.param("id", id);
-			rqt.param("key", key);
+			rqt.add_param("id", id);
+			rqt.add_param("key", key);
+			rqt.append_param();
 			
 			try{
 				rqt.Request();

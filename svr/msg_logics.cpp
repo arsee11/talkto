@@ -13,27 +13,35 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 {
 	cout<<"TransMsgTo::Execute(..from="<<from<<",to="<<to<<",msg="<<msg<<")"<<endl;
 	response_t *rsp = new response_t("response");
-	rsp->ParamAdd("code", RspCode::Failed);
+	rsp->add_param("code", RspCode::Failed);
 		
 	if (obj == nullptr)
+	{
+		rsp->append_param();
 		return rsp;
+	}
 
 	auto mto = find_if(obj->ref().begin(), obj->ref().end(),
 		[to](const relation_ptr_t &r){ return r->y() == to; }
 	);
 		
 	if (!IsFriendWith(obj->ref(), from, to) )
-		return rsp;	
+	{
+		rsp->append_param();
+		return rsp;
+	}	
 
 	cout<<"tranto:"<<(*mto)->ip()<<(*mto)->port()<<endl;
 	PushResponse<Jpack> pusher("pusher", "msgview");
-	pusher.ParamAdd("msg", msg);
-	pusher.ParamAdd("from",from);
+	pusher.add_param("msg", msg);
+	pusher.add_param("from",from);
+	pusher.append_param();
 	pusher.Push<conn_container>((*mto)->ip(), (*mto)->port() );
 	
 	//save msg history?
 	
-	rsp->ParamAdd("code", RspCode::OK);
+	rsp->add_param("code", RspCode::OK);
+	rsp->append_param();
 	return rsp;
 }
 
