@@ -17,8 +17,9 @@ int main()
 	MemberLogin t;
 	member_list_obj_t obj;
 	Receiver rev = { 0, "192.168.1.104", 1122 };
+	string pwd = "123";
 
-	MemberInfo::response_t* rsp = t.Execute(&rev, &obj, 3, "123");
+	MemberInfo::response_t* rsp = t.Execute(&rev, &obj, 3,pwd); 
 	Jpack* pck = rsp->Reply();
 	cout << pck->status() << endl;
 	cout << pck->action() << endl;

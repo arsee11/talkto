@@ -18,10 +18,11 @@ typedef PreactorServer<tcp_preactor_t,
 int main(int argc, char **argv)
 {
 	member_list_obj_t mlobj;
+	friends_obj_t friends;
 	//msg_list_t msgl_obj;
 
 	net::SockInit();
-	objects_t::Init(&mlobj);
+	objects_t::Init(&mlobj, &friends);
 
 	net::SockConfig conf = { 11111, 0, "", "" };
 	

@@ -12,7 +12,7 @@
 #include "msg_logics.h"
 #endif
 
-#ifndef LOGICS_H
+#ifndef MEMBER_LOGICS_H
 #include "member_logics.h"
 #endif
 

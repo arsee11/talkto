@@ -20,6 +20,8 @@ class TransMsgTo :
 	public BaseLogicJpack<3, TransMsgTo, size_t, size_t, string>
 {
 public:
+	typedef friends_obj_t obj_t;
+
 	response_t* Execute(Receiver *rev, friends_obj_t *obj, size_t from, size_t to, const string &msg);
 
 	static const string name(){ return "tran_msg"; }

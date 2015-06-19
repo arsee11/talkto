@@ -29,20 +29,25 @@ using namespace arsee;
 //params:code=(OK|FAILED)
 //*******************response
 class AddMember :
-	public BaseLogicJpack<2, AddMember, size_t, string, string>
+	public BaseLogicJpack<2, AddMember, string, string>
 {
 public:
+	typedef member_list_obj_t obj_t;
+
 	response_t* Execute(Receiver *rev, member_list_obj_t *obj, const string& name, const string& pwd);
 
 	static const string name(){ return "registry"; }
 	static const string target(){ return member_list_obj_t::name(); }
 	static const string p1(){ return "name"; }
+	static const string p2(){ return "pwd"; }
 };
 
 class MemberLogin:
 	public BaseLogicJpack<2, MemberLogin, size_t, string>
 {
 public:
+	typedef member_list_obj_t obj_t;
+
 	response_t* Execute(Receiver *rev, member_list_obj_t *obj, size_t id, const string& key);
 
 	static const string name(){ return "login"; }
@@ -67,6 +72,8 @@ class MemberInfo:
 	public BaseLogicJpack<1, MemberLogin, size_t>
 {
 public:
+	typedef member_list_obj_t obj_t;
+
 	response_t* Execute(Receiver *rev, member_list_obj_t *obj, size_t id);
 
 	static const string name(){ return "get_member_info"; }
@@ -90,6 +97,8 @@ class FriendInfo:
 	public BaseLogicJpack<1, FriendInfo, size_t>
 {
 public:
+	typedef friends_obj_t obj_t;
+
 	response_t* Execute(Receiver *rev, friends_obj_t *obj, size_t who);
 	
 	static const string name(){ return "get_friend_list"; }
@@ -118,6 +127,8 @@ class MakeFriendAction:
 	public BaseLogicJpack<2, MakeFriendAction, size_t, size_t>
 {
 public:
+	typedef friends_obj_t obj_t;
+
 	response_t* Execute(Receiver *rev, friends_obj_t *obj, size_t me, size_t who);
 	
 	static const string name(){ return "make_friend_with"; }
@@ -147,6 +158,8 @@ class AcceptFriendAction:
 	public BaseLogicJpack<4, AcceptFriendAction, size_t, size_t, bool, string>
 {
 public:
+	typedef friends_obj_t obj_t;
+
 	response_t* Execute(Receiver *rev, friends_obj_t *obj, size_t me, size_t who, bool op, string msg);
 	
 	static const string name(){ return "accept_friend_with"; }

@@ -11,11 +11,14 @@
  {
 	AddMember add;
 	member_list_obj_t obj;
-	AddMember::response_t* rsp = add.Execute(nullptr, &obj, "arsee02", "123");
+	string name = "arsee02";
+	string pwd = "123";
+	AddMember::response_t* rsp = add.Execute(nullptr, &obj, name, pwd); 
 	Jpack* pck = rsp->Reply();
-	cout<<pck->status()<<endl;
-	cout<<pck->action()<<endl;
-	cout<<pck->target()<<endl;
+	cout<<"status:"<<pck->status()<<endl;
+	cout<<"action:"<<pck->action()<<endl;
+	cout<<"target:"<<pck->target()<<endl;
+	cout<<"param:code:"<<pck->get_param(0, "code")<<endl;
 	
 	return 0;
  }

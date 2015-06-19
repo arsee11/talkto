@@ -5,6 +5,7 @@
 #include "odb/dbholder.h"
 #include "msg_logics.h"
 #include "logics.h"
+#include "codes.h"
 
 ////////////////////////////////////////////////////////////////////
 //TransMsgTo
@@ -22,7 +23,7 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 	}
 
 	auto mto = find_if(obj->ref().begin(), obj->ref().end(),
-		[to](const relation_ptr_t &r){ return r->y() == to; }
+		[to](const relation_ptr_t &r){ return r->y()->id() == to; }
 	);
 		
 	if (!IsFriendWith(obj->ref(), from, to) )
@@ -31,12 +32,13 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 		return rsp;
 	}	
 
-	cout<<"tranto:"<<(*mto)->ip()<<(*mto)->port()<<endl;
+	member_ptr_t mem((*mto)->y().load());
+	cout<<"tranto:"<<mem->ip()<<mem->port()<<endl;
 	PushResponse<Jpack> pusher("pusher", "msgview");
 	pusher.add_param("msg", msg);
 	pusher.add_param("from",from);
 	pusher.append_param();
-	pusher.Push<conn_container>((*mto)->ip(), (*mto)->port() );
+	pusher.Push<conn_container>(mem->ip(), mem->port() );
 	
 	//save msg history?
 	
