@@ -45,16 +45,21 @@ MemberLogin::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *
 	
 	string rawkey;
 	if (obj == nullptr)
+	{
+		rsp->append_param();
 		return rsp;
+	} 
 
 	member_ptr_t m;
 	if ((m = GetObjectT<Member>(id)) == nullptr)
 	{
+		rsp->append_param();
 		return rsp;
 	}
 		
 	if (m->pwd() != key)
 	{
+		rsp->append_param();
 		return rsp;
 	}
 
@@ -67,6 +72,7 @@ MemberLogin::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *
 	}
 	catch (odb::exception& e){
 		DbErrorHandle(e);
+		rsp->append_param();
 		return rsp;
 	}
 

@@ -20,6 +20,7 @@ bool IsFriendWith(const friends_t& friends, size_t me, size_t who)
 	try{
 		//odb::session ss;
 		odb::transaction t( DbConnPool::instance().get()->begin() );
+		t.tracer(stderr_tracer);
 		result_t r( DbConnPool::instance().get()->query<RelationNetwork>(
 				  query_t::x==me && query_t::y==who)
 		);

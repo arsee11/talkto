@@ -80,6 +80,12 @@ public:
 			Receiver rev = {base_t::_fd, base_t::_remoteip, base_t::_remote_port};
 			ArgIteration<Dispatchers...>::Handle(rev, ObjCollection::Instance(), pck, _replies);
 		}		
+		else
+		{
+#ifdef DEBUG
+			cout<<"pack error"<<endl;
+#endif
+		}
 	}
 
 	void OutputHandle()

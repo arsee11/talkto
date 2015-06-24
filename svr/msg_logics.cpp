@@ -22,23 +22,25 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 		return rsp;
 	}
 
-	auto mto = find_if(obj->ref().begin(), obj->ref().end(),
-		[to](const relation_ptr_t &r){ return r->y()->id() == to; }
-	);
-		
+	member_ptr_t mto;
+	if( (mto=GetObjectT<Member>(to) ) == nullptr )
+	{
+		rsp->append_param();
+		return rsp;
+	}
+
 	if (!IsFriendWith(obj->ref(), from, to) )
 	{
 		rsp->append_param();
 		return rsp;
 	}	
 
-	member_ptr_t mem((*mto)->y().load());
-	cout<<"tranto:"<<mem->ip()<<mem->port()<<endl;
+	cout<<"tranto:"<<mto->ip()<<mto->port()<<endl;
 	PushResponse<Jpack> pusher("pusher", "msgview");
 	pusher.add_param("msg", msg);
 	pusher.add_param("from",from);
 	pusher.append_param();
-	pusher.Push<conn_container>(mem->ip(), mem->port() );
+	pusher.Push<conn_container>(mto->ip(), mto->port() );
 	
 	//save msg history?
 	
