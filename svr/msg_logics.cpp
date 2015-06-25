@@ -34,13 +34,21 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 		rsp->append_param();
 		return rsp;
 	}	
-
-	cout<<"tranto:"<<mto->ip()<<mto->port()<<endl;
+	
+	mto->session().load();
+	if(mto->session() == nullptr)
+	{
+		rsp->append_param();
+		//not login, the save the offline msg.
+		return rsp;
+	}
+	
+	cout<<"tranto:"<<mto->session()->remote_ip()<<mto->session()->remote_port()<<endl;
 	PushResponse<Jpack> pusher("pusher", "msgview");
 	pusher.add_param("msg", msg);
 	pusher.add_param("from",from);
 	pusher.append_param();
-	pusher.Push<conn_container>(mto->ip(), mto->port() );
+	pusher.Push<conn_container>(mto->session()->remote_ip(), mto->session()->remote_port() );
 	
 	//save msg history?
 	

@@ -11,6 +11,10 @@
 #include "odb/models.h"
 #endif
 
+#ifndef MODLESYS_H
+#include "odb/modelsys.h"
+#endif
+
 #ifndef MVC_OBJECT_H
 #include "mvc/mvcobject.h"
 #endif

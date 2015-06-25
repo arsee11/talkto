@@ -16,12 +16,16 @@ using namespace odb;
 
 #pragma db model version(1,1)
 
+class Session;
+
 #pragma db object
 class Member
 {
 	friend class odb::access;
 	
 public:
+	typedef lazy_shared_ptr<Session> session_ptr;
+	
 	Member(){}
 
 
@@ -29,24 +33,23 @@ public:
 		:_name(name)
 	{}
 
-	string 			ip	()const{ return _ip	; }
-	unsigned short 	port()const{ return _port; }
-	string 			name()const{ return _name; }
-	string 			pwd	()const{ return _pwd ; }
-	size_t 			id	()const{ return _id  ; }
-	
-	void  ip	(const string& 	val){ _ip	= val; }
-	void  port 	(unsigned short val){ _port	= val; }
-	void  name	(const string& 	val){ _name = val; }
-	void  pwd	(const string& 	val){ _pwd	= val; }
-	void  id	(size_t 		val){ _id	= val; }
+	string 			name	()const{ return _name; }
+	string 			pwd		()const{ return _pwd ; }
+	size_t 			id		()const{ return _id  ; }
+	session_ptr		session	()const{ return _session;}
+
+	void  name		(const string& 	val){ _name = val; }
+	void  pwd		(const string& 	val){ _pwd	= val; }
+	void  id		(size_t 		val){ _id	= val; }
+	void  session	(session_ptr	val){ _session	= val; }
 	
 private:
 	string 			_name	;
 	string 			_pwd	;
 	string 			_ip		;
 	unsigned short  _port=0	;
-
+	
+	lazy_shared_ptr<Session> _session;
 	//vector<lazy_shared_ptr<Member> > _friends;
 	
 	#pragma db id auto
