@@ -5,9 +5,13 @@
 
 #include <odb/core.hxx>
 #include <odb/mysql/database.hxx>
+#include <odb/mysql/exceptions.hxx>
 #include <memory>
 #include <iostream>
 
+#ifndef OBJECTS_H
+#include "../objects.h"
+#endif
 
 using namespace std;
 
@@ -92,7 +96,11 @@ shared_ptr<Obj> GetObjectT(Id id)
 			shared_ptr<Member> m(DbConnPool::instance().get()->load<Member>(id));
 			return m;
 		}
-		catch (odb::exception& e){
+		catch (odb::object_not_persistent& e){
+			return nullptr;
+		}
+		catch (odb::mysql::database_exception& e){
+			DbErrorHandle(e);
 			return nullptr;
 		}
 	}

@@ -30,6 +30,8 @@ typedef struct member_list :public list< member_ptr_t >
 } member_list_t;
 typedef arsee::Object<member_list>  member_list_obj_t;
 
+typedef Member::session_ptr sessoin_ptr_t;
+
 typedef std::shared_ptr<RelationNetwork>  relation_ptr_t;
 typedef struct friends_list :public list< relation_ptr_t >
 {

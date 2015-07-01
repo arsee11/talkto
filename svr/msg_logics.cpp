@@ -2,10 +2,13 @@
 #include <iostream>
 #include "myconnection.h"
 #include "odb/models-odb.hxx"
-#include "odb/dbholder.h"
 #include "msg_logics.h"
 #include "logics.h"
 #include "codes.h"
+
+#ifndef LOGIC_SESSION_H 
+#include "logic_session.h"
+#endif
 
 ////////////////////////////////////////////////////////////////////
 //TransMsgTo
@@ -35,8 +38,7 @@ TransMsgTo::response_t* TransMsgTo::Execute(
 		return rsp;
 	}	
 	
-	mto->session().load();
-	if(mto->session() == nullptr)
+	if( !SessionLogic().IsLogin(mto) )
 	{
 		rsp->append_param();
 		//not login, the save the offline msg.

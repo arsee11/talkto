@@ -3,9 +3,12 @@
 #include <iostream>
 #include "myconnection.h"
 #include "odb/models-odb.hxx"
-#include "odb/dbholder.h"
 #include "codes.h"
 #include "logics.h"
+
+#ifndef LOGIC_SESSION_H
+#include "logic_session.h"
+#endif
 
 bool IsMemberExist(size_t id)
 {
@@ -63,8 +66,8 @@ MemberLogin::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *
 		return rsp;
 	}
 
-	m->ip(rev->ip);
-	m->port(rev->port);
+	SessionLogic().Login(m, rev->ip, rev->port);
+
 	try{
 		odb::transaction t(DbConnPool::instance().get()->begin());
 		DbConnPool::instance().get()->update<Member>(m);
@@ -104,8 +107,8 @@ MemberInfo::response_t* MemberInfo::Execute(Receiver* rev, member_list_obj_t *ob
 	rsp->add_param("code", RspCode::OK);
 	rsp->add_param("id", m->id());
 	rsp->add_param("name", m->name());
-	rsp->add_param("ip", m->ip());
-	rsp->add_param("port", m->port());
+	rsp->add_param("ip", m->session()->remote_ip());
+	rsp->add_param("port", m->session()->remote_port());
 	rsp->append_param();
 	
 	return rsp;
@@ -143,7 +146,7 @@ MakeFriendAction::response_t* MakeFriendAction::Execute(
 	pusher.add_param("code", RspCode::MakeFriendRequest);
 	pusher.add_param("who",me);
 	pusher.append_param();
-	pusher.Push<conn_container>(mwho->ip(), mwho->port() );
+	pusher.Push<conn_container>(mwho->session()->remote_ip(), mwho->session()->remote_port() );
 	
 	rsp->add_param("code", OK);
 	rsp->append_param();
@@ -196,7 +199,7 @@ AcceptFriendAction::response_t* AcceptFriendAction::Execute(
 	pusher.add_param("who",me);
 	pusher.add_param("msg", msg);
 	pusher.append_param();
-	pusher.Push<conn_container>(mwho->ip(), mwho->port() );
+	pusher.Push<conn_container>(mwho->session()->remote_ip(), mwho->session()->remote_port() );
 	
 	rsp->add_param("code", OK);
 	rsp->append_param();
@@ -233,7 +236,7 @@ FriendInfo::response_t* FriendInfo::Execute(Receiver* rev, friends_obj_t *obj, s
 			p.add_param("weight"	,i->w());
 			p.append_param();			
 		}
-		p.Push<conn_container>( mwho->ip(), mwho->port() );
+		p.Push<conn_container>( mwho->session()->remote_ip(), mwho->session()->remote_port() );
 	}
 	//load form persistent.
 	else
@@ -255,7 +258,7 @@ FriendInfo::response_t* FriendInfo::Execute(Receiver* rev, friends_obj_t *obj, s
 				p.append_param();
 				obj->ref().push_back( relation_ptr_t( new RelationNetwork(x->id(), y->id(), i->w() ) ) );
 			}
-			p.Push<conn_container>( mwho->ip(), mwho->port() );
+			p.Push<conn_container>( mwho->session()->remote_ip(), mwho->session()->remote_port() );
 		}
 		catch (odb::exception& e){
 			DbErrorHandle(e);

@@ -1,0 +1,31 @@
+CC=g++
+CXX=g++
+Inc=-I../../mylib/ 
+NetInc=-I../../mylib/
+JsonInc=-I/home/arsee_p/lib/jsoncpp-master/include/
+Libs=-lmymvc -lmynet 
+SharedLibs=-lodb -lodb-mysql
+Libdir=-L../../mylib/lib/
+FLAGS= $(Inc) --std=c++11 -g -O -fno-inline 
+TARGT=talkto
+OBJS=main.o logics.o member_logics.o msg_logics.o
+DEBUG=-DDEBUG
+
+$(TARGT): $(OBJS)
+	$(CXX) -o $(TARGT) $(OBJS) odb/models-odb.o odb/modelsys-odb.o -Wl,-Bdynamic $(SharedLibs) $(Libdir) $(Libs) 
+
+main.o: logics.h controls.h myconnection.h main.cpp
+	$(CC) $(DEBUG) $(NetInc) $(JsonInc) $(FLAGS) -c main.cpp
+
+logics.o:logics.cpp logics.h
+	$(CC) $(FLAGS) $(JsonInc) -c logics.cpp
+
+member_logics.o: ./odb/dbholder.h ./odb/models-odb.hxx myconnection.h logics.h member_logics.cpp
+	$(CC) $(FLAGS) $(JsonInc) -c member_logics.cpp
+
+msg_logics.o: ./odb/dbholder.h ./odb/models-odb.hxx myconnection.h logics.h msg_logics.cpp
+	$(CC) $(FLAGS) $(JsonInc) -c msg_logics.cpp
+
+
+clean:
+	rm -f $(TARGT) $(OBJS)

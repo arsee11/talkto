@@ -11,12 +11,13 @@
 #include <vector>
 #include <utility>
 
+#include "modelsys.h"
+
 using namespace std;
 using namespace odb;
 
 #pragma db model version(1,1)
 
-class Session;
 
 #pragma db object
 class Member
@@ -24,7 +25,7 @@ class Member
 	friend class odb::access;
 	
 public:
-	typedef lazy_shared_ptr<Session> session_ptr;
+	typedef shared_ptr<Session> session_ptr;
 	
 	Member(){}
 
@@ -46,10 +47,8 @@ public:
 private:
 	string 			_name	;
 	string 			_pwd	;
-	string 			_ip		;
-	unsigned short  _port=0	;
 	
-	lazy_shared_ptr<Session> _session;
+	session_ptr _session	;
 	//vector<lazy_shared_ptr<Member> > _friends;
 	
 	#pragma db id auto

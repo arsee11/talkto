@@ -1,0 +1,4 @@
+mysql_trace_trace() SIGSEGV Segmentation fault:
+	download mysql connector c 5.7 soruce, make&make install
+	
+

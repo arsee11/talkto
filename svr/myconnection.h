@@ -41,18 +41,23 @@
 #endif
 
 #include <vector>
+#include <fstream>
 
 using namespace std;
 using namespace arsee;
+
+enum{ MAX_BUF_LEN=1500};
+
+static ofstream fs("log.txt");
 
 typedef net::Preactor<net::FdHolder, true, net::Epoll> tcp_preactor_t;
 
 template<class Pack, class ObjCollection, class... Dispatchers>
 class MyConnection :
-	public net::Session<1024, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> >
+	public net::Session<MAX_BUF_LEN, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> >
 {
 	typedef Pack pack_t;
-	typedef net::Session<1024, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> > base_t;
+	typedef net::Session<MAX_BUF_LEN, tcp_preactor_t, MyConnection<Pack, ObjCollection, Dispatchers...> > base_t;
 	
 public:
 	MyConnection(net::fd_t fd, const char *ip, unsigned short port)
@@ -71,6 +76,7 @@ public:
 	{
 #ifdef DEBUG
 		cout<<"recv("<<len<<"):"<<base_t::_inbuf+8<<endl;
+		fs<<"recv("<<len<<"):"<<base_t::_inbuf+8<<endl;
 #endif
 		pack_t pck;
 		_userial(pck, base_t::_inbuf, len);
@@ -138,7 +144,7 @@ public:
 
 private:
 	typename pack_t::pack_list_t _replies;
-	typename pack_t::unserial_t _userial = typename pack_t::unserial_t(1024);
+	typename pack_t::unserial_t _userial = typename pack_t::unserial_t(MAX_BUF_LEN);
 	
 //	shared_ptr<UdpPeer> _push_sender;
 };
