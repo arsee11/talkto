@@ -13,7 +13,7 @@
 ////////////////////////////////////////////////////////////////////
 //TransMsgTo
 TransMsgTo::response_t* TransMsgTo::Execute(
-	Receiver* rev, friends_obj_t *obj, size_t from, size_t to, const string &msg)
+	friends_obj_t *obj, size_t from, size_t to, const string &msg)
 {
 	cout<<"TransMsgTo::Execute(..from="<<from<<",to="<<to<<",msg="<<msg<<")"<<endl;
 	response_t *rsp = new response_t("response");

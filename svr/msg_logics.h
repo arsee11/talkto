@@ -22,7 +22,7 @@ class TransMsgTo :
 public:
 	typedef friends_obj_t obj_t;
 
-	response_t* Execute(Receiver *rev, friends_obj_t *obj, size_t from, size_t to, const string &msg);
+	response_t* Execute(friends_obj_t *obj, size_t from, size_t to, const string &msg);
 
 	static const string name(){ return "tran_msg"; }
 	static const string target(){ return member_list_obj_t::name(); }

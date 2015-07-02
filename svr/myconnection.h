@@ -32,8 +32,8 @@
 #include "objects.h"
 #endif
 
-#ifndef RECEIVER_H 
-#include "mvc/receiver.h"
+#ifndef MVC_REQUEST_CONTEXT_H 
+#include "mvc/mvc_request_context.h"
 #endif
 
 #ifndef TCPSOCK_H 
@@ -83,8 +83,8 @@ public:
 		if(pck.status() )
 		{
 			//ArgIteration<Dispachters...>::Handle(ObjCollection::Instance(), pck, _replies);
-			Receiver rev = {base_t::_fd, base_t::_remoteip, base_t::_remote_port};
-			ArgIteration<Dispatchers...>::Handle(rev, ObjCollection::Instance(), pck, _replies);
+			RequestContext context = {base_t::_fd, base_t::_remoteip, base_t::_remote_port};
+			_replies = DispatcherHandler<Dispatchers...>::Handle(context, ObjCollection::Instance(), pck);
 		}		
 		else
 		{
@@ -135,18 +135,11 @@ public:
 		cout<<"PostOutput()"<<endl;
 		_replies.push_back(pck);
 		base_t::_preactor->PostSend(base_t::_fd);
-		//typename pack_t::serial_t serial;
-		//size_t len=0;
-		//const char *buf = serial(pck, &len);
-		//AddrPair addr = {11112, base_t::_remoteip};
-//		_push_sender->Write(buf, len, addr);
 	}
 
 private:
 	typename pack_t::pack_list_t _replies;
 	typename pack_t::unserial_t _userial = typename pack_t::unserial_t(MAX_BUF_LEN);
-	
-//	shared_ptr<UdpPeer> _push_sender;
 };
 
 

@@ -34,7 +34,7 @@ class AddMember :
 public:
 	typedef member_list_obj_t obj_t;
 
-	response_t* Execute(Receiver *rev, member_list_obj_t *obj, const string& name, const string& pwd);
+	response_t* Execute(member_list_obj_t *obj, const string& name, const string& pwd);
 
 	static const string name(){ return "registry"; }
 	static const string target(){ return member_list_obj_t::name(); }
@@ -48,7 +48,7 @@ class MemberLogin:
 public:
 	typedef member_list_obj_t obj_t;
 
-	response_t* Execute(Receiver *rev, member_list_obj_t *obj, size_t id, const string& key);
+	response_t* Execute(member_list_obj_t *obj, size_t id, const string& key);
 
 	static const string name(){ return "login"; }
 	static const string target(){ return member_list_obj_t::name(); }
@@ -74,7 +74,7 @@ class MemberInfo:
 public:
 	typedef member_list_obj_t obj_t;
 
-	response_t* Execute(Receiver *rev, member_list_obj_t *obj, size_t id);
+	response_t* Execute(member_list_obj_t *obj, size_t id);
 
 	static const string name(){ return "get_member_info"; }
 	static const string target(){ return member_list_obj_t::name(); }
@@ -99,7 +99,7 @@ class FriendInfo:
 public:
 	typedef friends_obj_t obj_t;
 
-	response_t* Execute(Receiver *rev, friends_obj_t *obj, size_t who);
+	response_t* Execute(friends_obj_t *obj, size_t who);
 	
 	static const string name(){ return "get_friend_list"; }
 	static const string target(){ return friends_obj_t::name(); }
@@ -129,7 +129,7 @@ class MakeFriendAction:
 public:
 	typedef friends_obj_t obj_t;
 
-	response_t* Execute(Receiver *rev, friends_obj_t *obj, size_t me, size_t who);
+	response_t* Execute(friends_obj_t *obj, size_t me, size_t who);
 	
 	static const string name(){ return "make_friend_with"; }
 	static const string target(){ return friends_obj_t::name(); }
@@ -160,7 +160,7 @@ class AcceptFriendAction:
 public:
 	typedef friends_obj_t obj_t;
 
-	response_t* Execute(Receiver *rev, friends_obj_t *obj, size_t me, size_t who, bool op, string msg);
+	response_t* Execute(friends_obj_t *obj, size_t me, size_t who, bool op, string msg);
 	
 	static const string name(){ return "accept_friend_with"; }
 	static const string target(){ return friends_obj_t::name(); }

@@ -18,7 +18,7 @@ bool IsMemberExist(size_t id)
 
 ////////////////////////////////////////////////////////////////////
 //AddMember
-AddMember::response_t* AddMember::Execute(Receiver* rev, member_list_obj_t *obj, const string& name, const string& pwd)
+AddMember::response_t* AddMember::Execute(member_list_obj_t *obj, const string& name, const string& pwd)
 {
 	response_t *rsp = new response_t("response");
 	rsp->add_param("code", RspCode::OK);
@@ -41,7 +41,7 @@ AddMember::response_t* AddMember::Execute(Receiver* rev, member_list_obj_t *obj,
 
 ////////////////////////////////////////////////////////////////////
 //MemberLogin
-MemberLogin::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *obj, size_t id, const string& key)
+MemberLogin::response_t* MemberLogin::Execute(member_list_obj_t *obj, size_t id, const string& key)
 {
 	response_t *rsp = new response_t("response");
 	rsp->add_param("code", RspCode::Failed);
@@ -66,7 +66,7 @@ MemberLogin::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *
 		return rsp;
 	}
 
-	SessionLogic().Login(m, rev->ip, rev->port);
+	SessionLogic().Login(m, get_request_context()->ip, get_request_context()->port);
 
 	try{
 		odb::transaction t(DbConnPool::instance().get()->begin());
@@ -87,7 +87,7 @@ MemberLogin::response_t* MemberLogin::Execute(Receiver* rev, member_list_obj_t *
 
 ////////////////////////////////////////////////////////////////////
 //MemberLogin
-MemberInfo::response_t* MemberInfo::Execute(Receiver* rev, member_list_obj_t *obj, size_t id)
+MemberInfo::response_t* MemberInfo::Execute(member_list_obj_t *obj, size_t id)
 {
 	response_t *rsp = new response_t("response");
 	
@@ -117,7 +117,7 @@ MemberInfo::response_t* MemberInfo::Execute(Receiver* rev, member_list_obj_t *ob
 ////////////////////////////////////////////////////////////////////
 //Make Friend
 MakeFriendAction::response_t* MakeFriendAction::Execute(
-	Receiver* rev, friends_obj_t *obj, size_t me, size_t who)
+	friends_obj_t *obj, size_t me, size_t who)
 {
 	response_t *rsp = new response_t("response");
 	
@@ -157,7 +157,7 @@ MakeFriendAction::response_t* MakeFriendAction::Execute(
 ////////////////////////////////////////////////////////////////////
 //Make Friend
 AcceptFriendAction::response_t* AcceptFriendAction::Execute(
-	Receiver* rev, friends_obj_t *obj, size_t me, size_t who, bool op, string msg)
+	friends_obj_t *obj, size_t me, size_t who, bool op, string msg)
 {
 	response_t *rsp = new response_t("response");
 	
@@ -208,7 +208,7 @@ AcceptFriendAction::response_t* AcceptFriendAction::Execute(
 
 ////////////////////////////////////////////////////////////////////
 //MemberLogin
-FriendInfo::response_t* FriendInfo::Execute(Receiver* rev, friends_obj_t *obj, size_t who)
+FriendInfo::response_t* FriendInfo::Execute(friends_obj_t *obj, size_t who)
 {
 	response_t *rsp = new response_t("response");
 	
