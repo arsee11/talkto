@@ -10,9 +10,6 @@
 #include "mvc/logictmpl.h"
 #endif
 
-#ifndef RECEIVER_H 
-#include "mvc/receiver.h"
-#endif
 
 using namespace arsee;
 

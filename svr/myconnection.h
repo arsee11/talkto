@@ -84,7 +84,10 @@ public:
 		{
 			//ArgIteration<Dispachters...>::Handle(ObjCollection::Instance(), pck, _replies);
 			RequestContext context = {base_t::_fd, base_t::_remoteip, base_t::_remote_port};
-			_replies = DispatcherHandler<Dispatchers...>::Handle(context, ObjCollection::Instance(), pck);
+			typename pack_t::pack_list_t pcks = DispatcherHandler<Dispatchers...>::Handle(context, ObjCollection::Instance(), pck);
+			for(auto &i : pcks)
+				_replies.push_back(i);
+			
 		}		
 		else
 		{

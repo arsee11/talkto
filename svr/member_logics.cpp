@@ -43,6 +43,11 @@ AddMember::response_t* AddMember::Execute(member_list_obj_t *obj, const string& 
 //MemberLogin
 MemberLogin::response_t* MemberLogin::Execute(member_list_obj_t *obj, size_t id, const string& key)
 {
+#ifdef DEBUG
+	cout<<"member_login called!"<<endl;
+#endif
+	cout<<"key="<<key<<endl;
+
 	response_t *rsp = new response_t("response");
 	rsp->add_param("code", RspCode::Failed);
 	

@@ -6,7 +6,7 @@ JsonInc=-I/home/arsee_p/lib/jsoncpp-master/include/
 Libs=-lmymvc -lmynet 
 SharedLibs=-lodb -lodb-mysql
 Libdir=-L../../mylib/lib/
-FLAGS= $(Inc) --std=c++11 -g -O -fno-inline 
+FLAGS= $(Inc) -DDEBUG --std=c++11 -g -O -fno-inline 
 TARGT=talkto
 OBJS=main.o logics.o member_logics.o msg_logics.o
 DEBUG=-DDEBUG
